@@ -34,9 +34,12 @@ defmodule CryptoCurrencyTrackerWeb.Endpoint do
   # this means its contents can be read but not tampered with.
   # Set :encryption_salt if you would also like to encrypt it.
   plug Plug.Session,
+    max_age: 30*24*60*60,
     store: :cookie,
-    key: "_crypto_currency_tracker_key",
-    signing_salt: "sWbpvqpU"
+    key: "sid",
+    signing_salt: "kK2Dn6FK",
+    key_length: 64,
+    http_only: true
 
   plug CryptoCurrencyTrackerWeb.Router
 

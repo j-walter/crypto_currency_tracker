@@ -9,9 +9,12 @@ defmodule CryptoCurrencyTracker.Application do
     # Define workers and child supervisors to be supervised
     children = [
       # Start the Ecto repository
-      supervisor(CryptoCurrencyTracker.Repo, []),
+      # supervisor(CryptoCurrencyTracker.Repo, []),
       # Start the endpoint when the application starts
       supervisor(CryptoCurrencyTrackerWeb.Endpoint, []),
+
+      worker(CryptoCurrencyTracker.ApiAgent, []),
+      worker(CryptoCurrencyTracker.AuthAgent, []),
       # Start your own worker by calling: CryptoCurrencyTracker.Worker.start_link(arg1, arg2, arg3)
       # worker(CryptoCurrencyTracker.Worker, [arg1, arg2, arg3]),
     ]

@@ -49,10 +49,15 @@ config :logger, :console, format: "[$level] $message\n"
 config :phoenix, :stacktrace_depth, 20
 
 # Configure your database
-config :crypto_currency_tracker, CryptoCurrencyTracker.Repo,
-  adapter: Ecto.Adapters.Postgres,
-  username: "postgres",
-  password: "postgres",
-  database: "crypto_currency_tracker_dev",
-  hostname: "localhost",
-  pool_size: 10
+#config :crypto_currency_tracker, CryptoCurrencyTracker.Repo,
+#  adapter: Ecto.Adapters.Postgres,
+#  username: "postgres",
+#  password: "postgres",
+#  database: "crypto_currency_tracker_dev",
+#  hostname: "localhost",
+#  pool_size: 10
+
+config :ueberauth, Ueberauth,
+  providers: [
+    google: {Ueberauth.Strategy.Google, [callback_url: "http://localhost:4000/auth/google/callback"]}
+  ]

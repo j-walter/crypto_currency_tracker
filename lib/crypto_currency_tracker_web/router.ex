@@ -13,10 +13,23 @@ defmodule CryptoCurrencyTrackerWeb.Router do
     plug :accepts, ["json"]
   end
 
+  pipeline :inject_token do
+    plug CryptoCurrencyTrackerWeb.InjectToken
+  end
+
+  scope "/auth", CryptoCurrencyTrackerWeb do
+    pipe_through :browser
+
+    get "/:provider", AuthController, :request
+    get "/:provider/callback", AuthController, :new
+    get "/*path", RedirectController, :auth
+  end
+
   scope "/", CryptoCurrencyTrackerWeb do
     pipe_through :browser # Use the default browser stack
-
+    pipe_through :inject_token #
     get "/", PageController, :index
+    get "/*path", RedirectController, :index
   end
 
   # Other scopes may use custom stacks.

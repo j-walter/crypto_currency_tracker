@@ -62,3 +62,8 @@ config :logger, level: :info
 # Finally import the config/prod.secret.exs
 # which should be versioned separately.
 import_config "prod.secret.exs"
+
+config :ueberauth, Ueberauth,
+  providers: [
+    google: {Ueberauth.Strategy.Google, [callback_url: "https://cryptocoin.loopback.onl/auth/google/callback"]}
+  ]
