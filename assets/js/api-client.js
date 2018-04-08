@@ -9,8 +9,8 @@ export default class ApiClient extends React.Component {
     var check = this.check.bind(this);
   }
 
-  reset() {
-   this.props.channel.push("reset", {}).receive("ok", state => {
+  refresh() {
+   this.props.channel.push("get_currency", {}).receive("ok", state => {
       this.setState(state)
     });
   }
