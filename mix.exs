@@ -20,7 +20,7 @@ defmodule CryptoCurrencyTracker.Mixfile do
   def application do
     [
       mod: {CryptoCurrencyTracker.Application, []},
-      extra_applications: [:logger, :runtime_tools]
+      other_applications: [:logger, :ueberauth_google, :runtime_tools]
     ]
   end
 
@@ -41,7 +41,9 @@ defmodule CryptoCurrencyTracker.Mixfile do
       {:phoenix_live_reload, "~> 1.0", only: :dev},
       {:gettext, "~> 0.11"},
       {:cowboy, "~> 1.0"},
-      {:ueberauth_google, "~> 0.7"}
+      {:ueberauth_google, "~> 0.7"},
+      {:httpoison, "~> 1.0"},
+      {:jason, "~> 1.0"}
     ]
   end
 
@@ -53,9 +55,10 @@ defmodule CryptoCurrencyTracker.Mixfile do
   # See the documentation for `Mix` for more info on aliases.
   defp aliases do
     [
-      "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
-      "ecto.reset": ["ecto.drop", "ecto.setup"],
-      "test": ["ecto.create --quiet", "ecto.migrate", "test"]
+     "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
+     "ecto.reset": ["ecto.drop", "ecto.setup"],
+     "test": ["ecto.create --quiet", "ecto.migrate", "test"],
+     "test": ["test"]
     ]
   end
 end
