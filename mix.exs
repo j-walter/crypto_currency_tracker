@@ -20,7 +20,7 @@ defmodule CryptoCurrencyTracker.Mixfile do
   def application do
     [
       mod: {CryptoCurrencyTracker.Application, []},
-      other_applications: [:logger, :ueberauth_google, :runtime_tools]
+      other_applications: [:logger, :ueberauth_google, :runtime_tools, :httpoison]
     ]
   end
 

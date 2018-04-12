@@ -2,7 +2,7 @@ defmodule CryptoCurrencyTracker.Api do
   alias CryptoCurrencyTracker.ApiAgent
 
   defp cb_headers() do
-    ["CB-VERSION": "2015-04-08", "Accept": "Application/json; Charset=utf-8"]
+    ["CB-VERSION": "2016-02-18"]
   end
 
   defp cb_digital_currencies() do
@@ -28,9 +28,12 @@ defmodule CryptoCurrencyTracker.Api do
 
   def get_currency_pricing(currency_id, start_date, end_date) do
     if currency_id in cb_digital_currencies() do
-      HTTPoison.start
-      response = HTTPoison.get!("https://api.coinbase.com/v2/prices/" <> currency_id <> "-USD/buy", cb_headers(), cb_options())
-
+      case HTTPoison.get("https://api.coinbase.com/v2/prices/" <> currency_id <> "-USD/buy", cb_headers(), cb_options()) do
+        {:ok, %{body: body, status_code: 200}} ->
+          Jason.decode!(body)["data"]
+        _ ->
+          %{}
+      end
     else
       {}
     end

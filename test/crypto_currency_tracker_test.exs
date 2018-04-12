@@ -3,7 +3,7 @@ defmodule CryptoCurrencyTrackerTest do
   doctest CryptoCurrencyTracker
 
   test "Basic tests" do
-    IO.inspect(Jason.decode(CryptoCurrencyTracker.Api.get_currency_pricing("BTC", nil, nil).body))
+    IO.inspect(CryptoCurrencyTracker.Api.get_currency_pricing("BTC", nil, nil))
   end
 
 end
