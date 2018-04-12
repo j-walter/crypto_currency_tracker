@@ -8,7 +8,9 @@ defmodule CryptoCurrencyTracker.User do
 
   schema "users" do
     field :email, :string
-    has_many :sessions, CryptoCurrencyTracker.Session, on_delete: :delete_all
+    field :follow_btc, :boolean
+    field :follow_ltc, :boolean
+    field :follow_eth, :boolean
     timestamps()
   end
 
