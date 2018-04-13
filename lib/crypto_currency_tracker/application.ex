@@ -12,7 +12,7 @@ defmodule CryptoCurrencyTracker.Application do
       supervisor(CryptoCurrencyTracker.Repo, []),
       # Start the endpoint when the application starts
       supervisor(CryptoCurrencyTrackerWeb.Endpoint, []),
-
+      worker(CryptoCurrencyTracker.TrackerAgent, []),
       worker(CryptoCurrencyTracker.ApiAgent, []),
       worker(CryptoCurrencyTracker.AuthAgent, []),
       # Start your own worker by calling: CryptoCurrencyTracker.Worker.start_link(arg1, arg2, arg3)
