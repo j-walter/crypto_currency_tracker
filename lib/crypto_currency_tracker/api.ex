@@ -1,9 +1,8 @@
 defmodule CryptoCurrencyTracker.Api do
   alias CryptoCurrencyTracker.ApiAgent
-    alias CryptoCurrencyTracker.TrackerAgent
   alias CryptoCurrencyTracker.Api
 
-  @digital_currencies TrackerAgent.digital_currencies()
+  @digital_currencies ApiAgent.digital_currencies()
 
 
   # if currency_id is nil => return all the currency data that the active user is tracking

@@ -1,6 +1,7 @@
 defmodule CryptoCurrencyTrackerWeb.AuthController do
   use CryptoCurrencyTrackerWeb, :controller
   alias CryptoCurrencyTracker.AuthAgent
+  alias CryptoCurrencyTracker.ApiAgent
   alias CryptoCurrencyTracker.User
 
   plug Ueberauth
