@@ -30,13 +30,16 @@ defmodule CryptoCurrencyTracker.Api do
     []
   end
 
-  def enable_currency_alerts(currency_id, user_details, threshold, direction) when not is_nil(user_details) and currency_id in @digital_currencies do
+
+  def enable_currency_alerts(currency_id, user_details, thresholds) when not is_nil(user_details) and currency_id in @digital_currencies do
     []
   end
 
   def disable_currency_alerts(currency_id, user_details) when not is_nil(user_details) and currency_id in @digital_currencies do
     []
   end
+
+
 
   def send_currency_alerts do
     nil

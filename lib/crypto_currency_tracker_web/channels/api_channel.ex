@@ -24,8 +24,8 @@ defmodule CryptoCurrencyTrackerWeb.ApiChannel do
     {:reply, {:ok, Api.unfollow_currency(currency_id, get_user_details(socket))}, socket}
   end
 
-  def handle_in("enable_currency_alerts", %{"currency_id" => currency_id, "threshold" => threshold, "direction" => direction}, socket) do
-    {:reply, {:ok, Api.enable_currency_alerts(currency_id, get_user_details(socket), threshold, direction)}, socket}
+  def handle_in("enable_currency_alerts", %{"currency_id" => currency_id, "thresholds" => thresholds}, socket) do
+    {:reply, {:ok, Api.enable_currency_alerts(currency_id, get_user_details(socket), thresholds, direction)}, socket}
   end
 
   def handle_in("disable_currency_alerts", %{"currency_id" => currency_id}, socket) do

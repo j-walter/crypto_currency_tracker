@@ -19,7 +19,7 @@ defmodule CryptoCurrencyTrackerWeb.Router do
 
   scope "/auth", CryptoCurrencyTrackerWeb do
     pipe_through :browser
-
+    pipe_through :inject_token
     get "/:provider", AuthController, :request
     get "/:provider/callback", AuthController, :new
     get "/*path", RedirectController, :auth
@@ -32,8 +32,4 @@ defmodule CryptoCurrencyTrackerWeb.Router do
     get "/*path", RedirectController, :index
   end
 
-  # Other scopes may use custom stacks.
-  # scope "/api", CryptoCurrencyTrackerWeb do
-  #   pipe_through :api
-  # end
 end
