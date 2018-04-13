@@ -1,17 +1,11 @@
 defmodule CryptoCurrencyTracker.Api do
   alias CryptoCurrencyTracker.ApiAgent
 
-  defp cb_headers() do
-    ["CB-VERSION": "2016-02-18"]
-  end
+  @cb_headers ["CB-VERSION": "2016-02-18"]
 
-  defp cb_digital_currencies() do
-    ["BTC", "LTC", "ETH"]
-  end
+  @cb_digital_currencies ["BTC", "LTC", "ETH"]
 
-  defp cb_options() do
-    [ssl: [{:versions, [:'tlsv1.2']}], recv_timeout: 500]
-  end
+  @cb_options [ssl: [{:versions, [:'tlsv1.2']}], recv_timeout: 500]
 
   # if currency_id is nil => return all the currency data that the active user is tracking
   # otherwise return the specific data associated with the requested currency id
@@ -26,32 +20,28 @@ defmodule CryptoCurrencyTracker.Api do
     end
   end
 
-  def get_currency_pricing(currency_id, start_date, end_date) do
-    if currency_id in cb_digital_currencies() do
-      case HTTPoison.get("https://api.coinbase.com/v2/prices/" <> currency_id <> "-USD/buy", cb_headers(), cb_options()) do
-        {:ok, %{body: body, status_code: 200}} ->
-          Jason.decode!(body)["data"]
-        _ ->
-          %{}
-      end
-    else
-      {}
+  def get_currency_pricing(currency_id, start_date, end_date) when currency_id in @cb_digital_currencies do
+    case HTTPoison.get("https://api.coinbase.com/v2/prices/" <> currency_id <> "-USD/buy", @cb_headers, @cb_options) do
+      {:ok, %{body: body, status_code: 200}} ->
+        Jason.decode!(body)["data"]
+      _ ->
+        %{}
     end
   end
 
-  def follow_currency(currency_id, user_details) do
+  def follow_currency(currency_id, user_details) when not is_nil(user_details) and currency_id in @cb_digital_currencies do
+
+  end
+
+  def unfollow_currency(currency_id, user_details) when not is_nil(user_details) and currency_id in @cb_digital_currencies do
     []
   end
 
-  def unfollow_currency(currency_id, user_details) do
+  def enable_currency_alerts(currency_id, user_details, threshold, direction) when not is_nil(user_details) and currency_id in @cb_digital_currencies do
     []
   end
 
-  def enable_currency_alerts(currency_id, user_details, threshold, direction) do
-    []
-  end
-
-  def disable_currency_alerts(currency_id, user_details) do
+  def disable_currency_alerts(currency_id, user_details) when not is_nil(user_details) and currency_id in @cb_digital_currencies do
     []
   end
 
