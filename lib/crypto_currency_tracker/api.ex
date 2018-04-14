@@ -1,6 +1,9 @@
 defmodule CryptoCurrencyTracker.Api do
   alias CryptoCurrencyTracker.ApiAgent
   alias CryptoCurrencyTracker.Api
+  alias CryptoCurrencyTracker.Repo
+  alias CryptoCurrencyTracker.User
+  alias CryptoCurrencyTracker.Alert
 
   @digital_currencies ApiAgent.digital_currencies()
 
@@ -36,24 +39,30 @@ defmodule CryptoCurrencyTracker.Api do
   end
 
   def get_currency_pricing(currency_id, start_date, end_date) when currency_id in @digital_currencies do
-
-  end
-
-  def follow_currency(currency_id, user_details) when not is_nil(user_details) and currency_id in @digital_currencies do
     
   end
 
+  def follow_currency(currency_id, user_details) when not is_nil(user_details) and currency_id in @digital_currencies do
+   change_user(Map.get(user_details, :id), "follow_#{currency_id}", true)
+  end
+
   def unfollow_currency(currency_id, user_details) when not is_nil(user_details) and currency_id in @digital_currencies do
-    []
+    change_user(Map.get((user_details), :id), "follow_#{currency_id}", false)
+  end
+
+  defp change_user(user_id, change_key, value) do
+    Repo.get!(User, user_id)
+    |> Ecto.Changeset.cast(%{change_key => value}, [String.to_atom(change_key)])
+    |> Repo.update!
   end
 
 
   def enable_currency_alerts(currency_id, user_details, thresholds) when not is_nil(user_details) and currency_id in @digital_currencies do
-    []
+    Alert.insert_or_update(currency_id, user_details, thresholds)
   end
 
   def disable_currency_alerts(currency_id, user_details) when not is_nil(user_details) and currency_id in @digital_currencies do
-    []
+    Alert.delete(currency_id, user_details)
   end
 
   def send_currency_alerts do
