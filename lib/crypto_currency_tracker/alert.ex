@@ -28,18 +28,27 @@ defmodule CryptoCurrencyTracker.Alert do
     |> validate_inclusion(:digital_currency, ApiAgent.digital_currencies())
   end
 
+  def get(currency_id, user_details) do
+    case Repo.get_by(Alert, digital_currency: currency_id, user_id: user_details.id) do
+     {:ok, alert} ->
+        alert
+     _ ->
+      %Alert{}
+    end
+  end
+
   def insert_or_update(currency_id, user_details, thresholds) when not is_nil(currency_id) and not is_nil(user_details) and is_list(thresholds) do
-    IO.inspect(user_details)
+    old_alert = get(currency_id, user_details)
     case Repo.insert(
       Alert.changeset(%Alert{digital_currency: currency_id,
         user_id: user_details.id, threshold1: Enum.at(thresholds, 0), threshold2: Enum.at(thresholds, 1)}),
       on_conflict: [set: [threshold1: Enum.at(thresholds, 0), threshold2: Enum.at(thresholds, 1)]],
       conflict_target: [:digital_currency, :user_id]) do
-      {:ok, alert} ->
-        Enum.each(Enum.reject([alert.threshold1, alert.threshold2], &is_nil/1), fn threshold ->
-          AlertAgent.put(threshold, MapSet.put(AlertAgent.get(threshold) || MapSet.new, user_details.email))
+      {:ok, new_alert} ->
+        Enum.each(Enum.reject([new_alert.threshold1, new_alert.threshold2, old_alert.threshold1, old_alert.threshold2], &is_nil/1), fn threshold ->
+          AlertAgent.add_subscriber(currency_id, threshold, user_details.email)
         end)
-        alert
+        new_alert
       _ ->
         nil
     end
@@ -50,7 +59,7 @@ defmodule CryptoCurrencyTracker.Alert do
       |> Repo.delete do
      {:ok, alert} ->
         Enum.each(Enum.reject([alert.threshold1, alert.threshold2], &is_nil/1), fn threshold ->
-          AlertAgent.put(threshold, MapSet.delete(AlertAgent.get(threshold), user_details.email))
+          AlertAgent.del_subscriber(currency_id, threshold, user_details.email)
         end)
         alert
      _ ->
