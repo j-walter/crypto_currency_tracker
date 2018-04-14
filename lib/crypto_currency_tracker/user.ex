@@ -23,11 +23,16 @@ defmodule CryptoCurrencyTracker.User do
   end
 
   def register_ueberauth_user(auth) do
-    Repo.insert(
+    case Repo.insert(
       %User{id: auth.extra.raw_info.user["sub"],
         email: auth.extra.raw_info.user["email"]},
       on_conflict: [set: [email: auth.extra.raw_info.user["email"]]],
-      conflict_target: :id)
+      conflict_target: :id) do
+      {:ok, user} ->
+        user
+      _ ->
+        %{}
+    end
   end
 
 

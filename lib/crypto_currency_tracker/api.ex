@@ -56,8 +56,6 @@ defmodule CryptoCurrencyTracker.Api do
     []
   end
 
-
-
   def send_currency_alerts do
     nil
   end
