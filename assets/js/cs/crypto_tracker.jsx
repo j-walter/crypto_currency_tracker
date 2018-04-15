@@ -1,10 +1,7 @@
-// looked at http://www.ccs.neu.edu/home/ntuck/courses/2018/01/cs4550/notes/19-spa/components.txt
-// to understand the component parts
-
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
-
+import socket from "./socket";
 import Nav from './nav';
 import FollowedCurrencies from './followed_currencies';
 
