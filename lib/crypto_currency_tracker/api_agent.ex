@@ -31,7 +31,10 @@ defmodule CryptoCurrencyTracker.ApiAgent do
   ## Process Implementation
 
   def handle_call({:get, key}, _from, state) do
-    {:reply, Map.get(state, key), state}
+    curr = Map.get(state, key)
+    prices = Map.put(%{}, :buy, curr.buy)
+    |> Map.put(:sell, curr.sell)
+    {:reply, prices, state}
   end
 
   def handle_call({:put, key, val}, _from, state) do
