@@ -40,13 +40,20 @@ defmodule CryptoCurrencyTracker.ApiAgent do
 
   def handle_call({:date, key, val}, _from, state) do
     curr = Map.get(state, key)
-    if Enum.member?(curr.history) do
-      {:reply, Enum.find(curr.history, &(&1 == val)), state}
+    val_curr = in_list(curr.history, val)
+    if val_curr do
+      {:reply, val_curr, state}
     else
       date = GenServer.call ApiRefresh, {:date, key, val}
       up_history = curr.history ++ [date]
       {:reply, date, Map.put(state, key, Map.put(Map.get(state, key), :history, up_history))} 
     end    
+  end
+
+  def in_list(list, val) do
+    Enum.find(list, fn {date, _} ->
+      date == val
+    end)
   end
 
 end
