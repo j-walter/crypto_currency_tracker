@@ -7,10 +7,9 @@ defmodule CryptoCurrencyTracker.ApiAgent do
   def digital_currencies, do: ["btc", "ltc", "eth"]
   @digital_currencies ["btc", "ltc", "eth"]
 
-
   def init(v) do
     v = Enum.reduce(@digital_currencies, %{}, fn currency_id, acc ->
-      Map.put(acc, currency_id, %{sell: %{current: nil}, buy: %{current: nil}, history: []})
+      Map.put(acc, currency_id, %{sell: %{current: nil}, buy: %{current: nil}, history: %{}})
     end)
     {:ok, v}
   end
@@ -31,32 +30,23 @@ defmodule CryptoCurrencyTracker.ApiAgent do
   ## Process Implementation
 
   def handle_call({:get, key}, _from, state) do
-    curr = Map.get(state, key)
-    prices = Map.put(%{}, :buy, curr.buy)
-    |> Map.put(:sell, curr.sell)
-    {:reply, prices, state}
+    {:reply, Map.get(state, key), state}
   end
 
   def handle_call({:put, key, val}, _from, state) do
     {:reply, :ok, Map.put(state, key, val)}
   end
 
-  def handle_call({:date, key, val}, _from, state) do
-    curr = Map.get(state, key)
-    val_curr = in_list(curr.history, val)
-    if val_curr do
-      {:reply, val_curr, state}
+  def get_price_on(currency_id, date) do
+    price = Map.get(get(currency_id).history, date)
+    if !price do
+      price = GenServer.call ApiRefresh, {:date, currency_id, date}
+      put(currency_id, Map.merge(get(currency_id), %{history: Map.put(get(currency_id).history, date, price)}))
+      price
     else
-      date = GenServer.call ApiRefresh, {:date, key, val}
-      up_history = curr.history ++ [date]
-      {:reply, date, Map.put(state, key, Map.put(Map.get(state, key), :history, up_history))} 
-    end    
-  end
+      price
+    end
 
-  def in_list(list, val) do
-    Enum.find(list, fn {date, _} ->
-      date == val
-    end)
   end
 
 end

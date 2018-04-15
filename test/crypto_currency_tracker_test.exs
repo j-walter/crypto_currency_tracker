@@ -14,7 +14,8 @@ defmodule CryptoCurrencyTrackerTest do
         nil
     end
 
-    #IO.inspect(CryptoCurrencyTracker.Api.get_currency_pricing("BTC", nil, nil))
+    IO.inspect(CryptoCurrencyTracker.Api.get_currency_pricing("btc", "2018-03-02","2018-03-02"))
+    IO.inspect(CryptoCurrencyTracker.ApiAgent.get("btc"))
   end
 
 end
