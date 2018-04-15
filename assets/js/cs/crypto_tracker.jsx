@@ -7,6 +7,7 @@ import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { Provider, connect } from 'react-redux';
 
 import Nav from './nav';
+import FollowedCurrencies from './followed_currencies';
 
 export default function crypto_tracker_init(store) {
   ReactDOM.render(
@@ -49,4 +50,3 @@ let CryptoTracker = connect((state) => state)((props) => {
     </Router>
   );
 });
-
