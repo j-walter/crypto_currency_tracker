@@ -39,7 +39,23 @@ defmodule CryptoCurrencyTracker.Api do
   end
 
   def get_currency_pricing(currency_id, start_date, end_date) when currency_id in @digital_currencies do
-    
+    #assuming data format right now
+    #will only work with ISO86 Format
+    start_date = Date.from_iso8601!(start_date)
+    end_date = Date.from_iso8601!(end_date)
+    diff = Date.diff(end_date, start_date)
+    if diff > 0 do
+      make_range(start_date, diff, currency_id)
+    else
+      GenServer.call ApiAgent, {:date, currency_id, Date.to_string(start_date)}
+    end
+  end
+
+  def make_range(start_date, diff, currency_id) do
+    range = []
+    Enum.reduce(0..diff, range, fn acc, range ->
+      range ++ [GenServer.call(ApiAgent, {:date, currency_id, Date.to_string(Date.add(start_date, acc))})]
+    end) 
   end
 
   def follow_currency(currency_id, user_details) when not is_nil(user_details) and currency_id in @digital_currencies do

@@ -32,5 +32,13 @@ defmodule CryptoCurrencyTracker.ApiRefresh do
     {:noreply, state}
   end
 
+  def handle_call({:date, key, val}, _from, state) do
+    case HTTPoison.get("https://api.coinbase.com/v2/prices/" <> key <> "-USD/spot", @cb_headers, params: %{date: val}) do
+    {:ok, %{body: body, status_code: 200}} ->
+      {:reply, {val, Jason.decode!(body)["data"]["amount"]}, state}
+    _ ->
+      {:noreply, state}
+    end 
+  end
 
 end
