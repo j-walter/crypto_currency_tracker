@@ -4,16 +4,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
-import { Provider, connect } from 'react-redux';
 
 import Nav from './nav';
 import FollowedCurrencies from './followed_currencies';
 
-export default function crypto_tracker_init(store) {
+export default function crypto_tracker_init() {
   ReactDOM.render(
-    <Provider store={store}>
-      <CryptoTracker />
-    </Provider>,
+    <CryptoTracker />,
     document.getElementById('root'),
   );
 }

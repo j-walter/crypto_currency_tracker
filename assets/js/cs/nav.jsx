@@ -2,8 +2,8 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { Form, FormGroup, NavItem, Input, Button } from 'reactstrap';
-import { connect } from 'react-redux';
-import api from '../api';
+// import { connect } from 'react-redux';
+// import api from '../api';
 
 // let Session = connect(({ token }) => { return { token }; })((props) => {
 //   console.log("In Session")
@@ -15,18 +15,18 @@ import api from '../api';
 // });
 
 // TODO: look into this to fix
-let LoginForm = connect(({ login }) => { return { login }; })((props) => {
-    function submit(ev) {
-      api.submit_user(props.login);
-      console.log(props.login);
-    }
+// let LoginForm = connect(({ login }) => { return { login }; })((props) => {
+//     function submit(ev) {
+//       api.submit_user(props.login);
+//       console.log(props.login);
+//     }
   
-    return (
-      <div className="navbar-text">
-        <Button className="btn-primary btn" onClick={submit}>Log in with Google</Button>
-      </div>
-    );
-  });
+//     return (
+//       <div className="navbar-text">
+//         <Button className="btn-primary btn" onClick={submit}>Log in with Google</Button>
+//       </div>
+//     );
+//   });
 
 function Nav(props) {
 //   let session_info;
@@ -53,10 +53,10 @@ function Nav(props) {
   );
 }
 
-function state2props(state) {
-  return {
-    token: state.token,
-  };
-}
+// function state2props(state) {
+//   return {
+//     token: state.token,
+//   };
+// }
 
-export default connect(state2props)(Nav);
+// export default connect(state2props)(Nav);
