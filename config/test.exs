@@ -17,3 +17,6 @@ config :crypto_currency_tracker, CryptoCurrencyTracker.Repo,
   database: "crypto_currency_tracker_test",
   hostname: "localhost",
   pool: Ecto.Adapters.SQL.Sandbox
+
+config :crypto_currency_tracker, CryptoCurrencyTracker.Mailer,
+  adapter: Bamboo.LocalAdapter

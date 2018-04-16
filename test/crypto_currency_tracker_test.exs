@@ -3,6 +3,8 @@ defmodule CryptoCurrencyTrackerTest do
   alias CryptoCurrencyTracker.Repo
   alias CryptoCurrencyTracker.User
   alias CryptoCurrencyTracker.Alert
+  alias CryptoCurrencyTracker.Mailer
+  alias CryptoCurrencyTracker.Email
   doctest CryptoCurrencyTracker
 
   test "Basic tests" do
@@ -14,8 +16,10 @@ defmodule CryptoCurrencyTrackerTest do
         nil
     end
 
-    IO.inspect(CryptoCurrencyTracker.Api.get_currency_pricing("btc", "2018-03-02","2018-03-02"))
+    IO.inspect(CryptoCurrencyTracker.Api.get_currency_pricing("btc", "2018-03-02","2018-03-03"))
     IO.inspect(CryptoCurrencyTracker.ApiAgent.get("btc"))
+    IO.inspect(Email.passed_digital_currency_threshold("btc", ["test@test.com"], 45.6, 45.4, 45.8)
+    |> Mailer.deliver_later())
   end
 
 end

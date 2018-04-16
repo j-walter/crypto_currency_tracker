@@ -2,6 +2,8 @@ defmodule CryptoCurrencyTracker.ApiRefresh do
   use GenServer
   alias CryptoCurrencyTracker.ApiAgent
   alias CryptoCurrencyTracker.AlertAgent
+  alias CryptoCurrencyTracker.Mailer
+  alias CryptoCurrencyTracker.Email
 
   @cb_headers ["CB-VERSION": "2016-02-18"]
   @cb_options [ssl: [{:versions, [:'tlsv1.2']}], recv_timeout: 500]
@@ -30,6 +32,8 @@ defmodule CryptoCurrencyTracker.ApiRefresh do
             Enum.each(AlertAgent.get_thresholds(currency_id), fn threshold ->
               if (threshold < new_price and old_price <= threshold) or (threshold >= new_price and old_price > threshold) do
                 to_notify = AlertAgent.get_subscribers(currency_id, threshold)
+                Email.passed_digital_currency_threshold(currency_id, to_notify, threshold, old_price, new_price)
+                |> Mailer.deliver_later()
               end
             end)
           _ ->
