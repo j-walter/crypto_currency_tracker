@@ -11,9 +11,6 @@ defmodule CryptoCurrencyTracker.ApiAgent do
     v = Enum.reduce(@digital_currencies, %{}, fn currency_id, acc ->
       Map.put(acc, currency_id, %{sell: %{current: nil}, buy: %{current: nil}, history: %{}})
     end)
-    #handle_info(:dates, self())
-    #Process.send_after(self(), :dates, 5000)
-    #get_years()
     {:ok, v}
   end
 
@@ -50,22 +47,6 @@ defmodule CryptoCurrencyTracker.ApiAgent do
       price
     end
 
-  end
-
-  def get_years() do
-    Enum.each(@digital_currencies, fn currency_id ->
-      get_year(currency_id)
-    end)
-  end
-
-  def get_year(currency_id) do
-    dates = []
-    today = DateTime.to_date(DateTime.utc_now)
-    Enum.each(0..365, fn acc ->
-      date = Date.to_string(Date.add(today, -acc))
-      price = GenServer.call ApiRefresh, {:date, currency_id, date}
-      put(currency_id, Map.merge(get(currency_id), %{history: Map.put(get(currency_id).history, date, price)}))
-    end)
   end
 
 end

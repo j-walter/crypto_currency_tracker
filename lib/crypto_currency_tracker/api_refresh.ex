@@ -9,7 +9,6 @@ defmodule CryptoCurrencyTracker.ApiRefresh do
   @cb_options [ssl: [{:versions, [:'tlsv1.2']}], recv_timeout: 500]
 
   def init(v) do
-  #  handle_info(:dates, self())
     handle_info(:poll, self())
     {:ok, v}
   end
@@ -54,22 +53,5 @@ defmodule CryptoCurrencyTracker.ApiRefresh do
       {:noreply, state}
     end 
   end
-
-  #def handle_info(:dates, state) do
-  #  Enum.each(ApiAgent.digital_currencies(), fn currency_id ->
-  #    get_year(currency_id)
-  #  end)
-  #  {:noreply, state}
-  #end
-
-  #def get_year(currency_id) do
-  #  dates = []
-  #  today = DateTime.to_date(DateTime.utc_now)
-  #
-  #  Enum.each(0..365, fn acc ->
-  #    ApiAgent.get_price_on(currency_id, Date.to_string(Date.add(today, -acc)))
-  #  end)
-  #end
-
 
 end
