@@ -58,3 +58,6 @@ config :crypto_currency_tracker, CryptoCurrencyTracker.Repo,
   pool_size: 10
 
 
+config :crypto_currency_tracker, CryptoCurrencyTracker.Mailer,
+  adapter: Bamboo.LocalAdapter
+

@@ -32,4 +32,8 @@ defmodule CryptoCurrencyTrackerWeb.Router do
     get "/*path", RedirectController, :index
   end
 
+  if Mix.env == :dev do
+    forward "/sent_emails", Bamboo.EmailPreviewPlug
+  end
+
 end

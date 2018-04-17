@@ -12,29 +12,18 @@ defmodule CryptoCurrencyTracker.Api do
   # otherwise return the specific data associated with the requested currency id
 
   # if user details is nil
-  def get_currency(currency_id, user_details) do
-    if user_details  do
-      if currency_id in @digital_currencies do
+  def get_currency(currency_id, user_details) when is_nil(currency_id) or currency_id in @digital_currencies do
+    if !currency_id  do
         %{currency_id => ApiAgent.get(currency_id)}
-      else
+    else
         prices = %{}
-        Enum.reduce(@digital_currencies, prices, fn currency, prices ->
-          if Map.get(user_details, String.to_atom("follow_" <> currency))do
-            Map.put(prices, currency, ApiAgent.get(currency))
+        Enum.reduce(@digital_currencies, prices, fn currency_id, prices ->
+          if !user_details or Map.get(user_details, String.to_atom("follow_" <> currency_id)) do
+            Map.put(prices, currency_id, ApiAgent.get(currency_id))
           else 
             prices
           end
         end)
-      end
-    else
-      if currency_id in @digital_currencies do
-        %{currency_id => ApiAgent.get(currency_id)}
-      else 
-        prices = %{}
-        Enum.reduce(@digital_currencies, prices, fn currency, prices ->
-          Map.put(prices, currency, ApiAgent.get(currency))
-        end)
-      end 
     end
   end
 
@@ -44,19 +33,12 @@ defmodule CryptoCurrencyTracker.Api do
     start_date = Date.from_iso8601!(start_date)
     end_date = Date.from_iso8601!(end_date)
     diff = Date.diff(end_date, start_date)
-    if diff > 0 do
-      make_range(start_date, diff, currency_id)
-    else
-      GenServer.call ApiAgent, {:date, currency_id, Date.to_string(start_date)}
-    end
+    Enum.reduce(0..diff, %{}, fn i, acc ->
+      date = Date.to_string(Date.add(start_date, i))
+      Map.put(acc, date, ApiAgent.get_price_on(currency_id, date))
+    end)
   end
 
-  def make_range(start_date, diff, currency_id) do
-    range = []
-    Enum.reduce(0..diff, range, fn acc, range ->
-      range ++ [GenServer.call(ApiAgent, {:date, currency_id, Date.to_string(Date.add(start_date, acc))})]
-    end) 
-  end
 
   def follow_currency(currency_id, user_details) when not is_nil(user_details) and currency_id in @digital_currencies do
    change_user(Map.get(user_details, :id), "follow_#{currency_id}", true)
@@ -79,10 +61,6 @@ defmodule CryptoCurrencyTracker.Api do
 
   def disable_currency_alerts(currency_id, user_details) when not is_nil(user_details) and currency_id in @digital_currencies do
     Alert.delete(currency_id, user_details)
-  end
-
-  def send_currency_alerts do
-    nil
   end
 
 end
