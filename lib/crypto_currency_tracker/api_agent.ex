@@ -4,8 +4,8 @@ defmodule CryptoCurrencyTracker.ApiAgent do
   alias CryptoCurrencyTracker.ApiAgent
   alias CryptoCurrencyTracker.ApiRefresh
 
-  def digital_currencies, do: ["btc", "ltc", "eth"]
   @digital_currencies ["btc", "ltc", "eth"]
+  def digital_currencies, do: @digital_currencies
 
   def init(v) do
     v = Enum.reduce(@digital_currencies, %{}, fn currency_id, acc ->

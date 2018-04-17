@@ -16,14 +16,15 @@ defmodule CryptoCurrencyTracker.Api do
     if !currency_id  do
         %{currency_id => ApiAgent.get(currency_id)}
     else
-        prices = %{}
-        Enum.reduce(@digital_currencies, prices, fn currency_id, prices ->
+        prices = Enum.reduce(@digital_currencies, %{}, fn currency_id, prices ->
           if !user_details or Map.get(user_details, String.to_atom("follow_" <> currency_id)) do
             Map.put(prices, currency_id, ApiAgent.get(currency_id))
           else 
             prices
           end
         end)
+        # add user context to model
+        Map.put(prices, :user, User.client_view(user_details))
     end
   end
 
@@ -61,6 +62,10 @@ defmodule CryptoCurrencyTracker.Api do
 
   def disable_currency_alerts(currency_id, user_details) when not is_nil(user_details) and currency_id in @digital_currencies do
     Alert.delete(currency_id, user_details)
+  end
+
+  def client_view(model, user_details) do
+
   end
 
 end
