@@ -9,9 +9,10 @@ export default function FollowedCurrencies(params) {
   //   let tasks = _.map(params.tasks, (pp) => (<Task key={pp.id} task={pp} />));
   // here we need to get the list from params and find out what cryptos the
   // user is tracking, then make a call through the api
-  let bitcoin_price = prices["btc"]["buy"]["current"];
-  let ethereum_price = 0;
-  let litecoin_price = 0;
+  console.log("BTC", params.prices.btc.sell);
+  let bitcoin_price = params.prices.btc.sell;
+  let ethereum_price = params.prices.eth.sell;
+  let litecoin_price = params.prices.ltc.sell;
   let coins = (
     <div className="row cryto-container">
       <Bitcoin price={bitcoin_price} />
