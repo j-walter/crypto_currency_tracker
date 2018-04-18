@@ -15,7 +15,7 @@ defmodule CryptoCurrencyTrackerWeb.ApiChannel do
   def handle_in("get_currency_pricing", %{"currency_id" => currency_id, "start_date" => start_date, "end_date" => end_date}, socket) do
     {:reply, {:ok, Api.get_currency_pricing(currency_id, start_date, end_date)}, socket}
   end
-  
+
   #Should check what if user details are nil
   def handle_in("follow_currency", %{"currency_id" => currency_id}, socket) do
     {:reply, {:ok, Api.follow_currency(currency_id, get_user_details(socket))}, socket}
