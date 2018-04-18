@@ -1,4 +1,4 @@
-// followed Nat's lecture notes 
+// followed Nat's lecture notes
 import React from 'react';
 import { Card, CardBody } from 'reactstrap';
 
@@ -9,7 +9,7 @@ export default function Ethereum(params) {
             <CardBody>
                 <div className="text-center ethereum">
                     <h2>Ethereum</h2>
-                    <p>{price}</p>
+                    <a href="/ethereum">{price}</a>
                 </div>
             </CardBody>
         </Card>

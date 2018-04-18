@@ -18,11 +18,9 @@ export default class FollowedCurrencies extends React.Component {
   }
 
   render() {
-    console.log(this.props.prices);
     //   let tasks = _.map(params.tasks, (pp) => (<Task key={pp.id} task={pp} />));
     // here we need to get the list from params and find out what cryptos the
     // user is tracking, then make a call through the api
-    console.log("BTC", this.props.prices.btc);
     let bitcoin_price = this.getPrice(this.props.prices.btc);
     let ethereum_price = this.getPrice(this.props.prices.eth);
     let litecoin_price = this.getPrice(this.props.prices.ltc);

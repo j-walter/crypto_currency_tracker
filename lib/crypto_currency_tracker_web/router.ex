@@ -46,6 +46,9 @@ defmodule CryptoCurrencyTrackerWeb.Router do
     #
     pipe_through(:inject_token)
     get "/", PageController, :index
+    get "/bitcoin", PageController, :bitcoin
+    get "/litecoin", PageController, :litecoin
+    get "/ethereum", PageController, :ethereum
     get("/*path", RedirectController, :index)
   end
 

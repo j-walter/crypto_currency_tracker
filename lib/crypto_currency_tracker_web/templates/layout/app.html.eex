@@ -16,7 +16,7 @@
   <body>
     <div class="container">
       <nav class="navbar navbar-dark bg-dark navbar-expand">
-        <span class="navbar-brand">
+        <a class="navbar-brand" href="/">
           CryptoTracker
         </span>
         <ul class="navbar-nav mr-auto">
