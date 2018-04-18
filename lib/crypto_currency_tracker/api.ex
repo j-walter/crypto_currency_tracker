@@ -40,7 +40,6 @@ defmodule CryptoCurrencyTracker.Api do
     end)
   end
 
-
   def follow_currency(currency_id, user_details) when not is_nil(user_details) and currency_id in @digital_currencies do
    change_user(Map.get(user_details, :id), "follow_#{currency_id}", true)
   end
@@ -62,10 +61,6 @@ defmodule CryptoCurrencyTracker.Api do
 
   def disable_currency_alerts(currency_id, user_details) when not is_nil(user_details) and currency_id in @digital_currencies do
     Alert.delete(currency_id, user_details)
-  end
-
-  def client_view(model, user_details) do
-
   end
 
 end
