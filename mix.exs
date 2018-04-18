@@ -20,7 +20,7 @@ defmodule CryptoCurrencyTracker.Mixfile do
   def application do
     [
       mod: {CryptoCurrencyTracker.Application, []},
-      other_applications: [:logger, :ueberauth_google, :runtime_tools, :httpoison]
+      other_applications: [:logger, :ueberauth_google, :runtime_tools, :httpoison, :bamboo]
     ]
   end
 
@@ -43,7 +43,8 @@ defmodule CryptoCurrencyTracker.Mixfile do
       {:cowboy, "~> 1.0"},
       {:ueberauth_google, "~> 0.7"},
       {:httpoison, "~> 1.0"},
-      {:jason, "~> 1.0"}
+      {:jason, "~> 1.0"},
+      {:bamboo, "~> 0.8"}
     ]
   end
 
@@ -57,8 +58,7 @@ defmodule CryptoCurrencyTracker.Mixfile do
     [
      "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
      "ecto.reset": ["ecto.drop", "ecto.setup"],
-     "test": ["ecto.create --quiet", "ecto.migrate", "test"],
-     "test": ["test"]
+     "test": ["ecto.drop", "ecto.create --quiet", "ecto.migrate", "test"],
     ]
   end
 end

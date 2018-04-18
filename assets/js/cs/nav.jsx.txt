@@ -20,7 +20,7 @@ import { Form, FormGroup, NavItem, Input, Button } from 'reactstrap';
 //       api.submit_user(props.login);
 //       console.log(props.login);
 //     }
-  
+
 //     return (
 //       <div className="navbar-text">
 //         <Button className="btn-primary btn" onClick={submit}>Log in with Google</Button>
@@ -28,7 +28,7 @@ import { Form, FormGroup, NavItem, Input, Button } from 'reactstrap';
 //     );
 //   });
 
-function Nav(props) {
+export default function Nav(props) {
 //   let session_info;
 
 //   if (props.token) {
@@ -45,7 +45,7 @@ function Nav(props) {
       </span>
       <ul className="navbar-nav mr-auto">
         <NavItem>
-          <NavLink to="/" exact={true} activeClassName="active" className="nav-link">Cryptos</NavLink>
+          //<NavLink to="/" exact={true} activeClassName="active" className="nav-link">Cryptos</NavLink>
         </NavItem>
       </ul>
       {/* {session_info} */}

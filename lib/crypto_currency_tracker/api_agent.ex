@@ -2,13 +2,14 @@ defmodule CryptoCurrencyTracker.ApiAgent do
   use GenServer
   alias CryptoCurrencyTracker.Api
   alias CryptoCurrencyTracker.ApiAgent
+  alias CryptoCurrencyTracker.ApiRefresh
+
   def digital_currencies, do: ["btc", "ltc", "eth"]
   @digital_currencies ["btc", "ltc", "eth"]
 
-
   def init(v) do
     v = Enum.reduce(@digital_currencies, %{}, fn currency_id, acc ->
-      Map.put(acc, currency_id, %{sell: %{current: nil, history: []}, buy: %{current: nil, history: []}})
+      Map.put(acc, currency_id, %{sell: %{current: nil}, buy: %{current: nil}, history: %{}})
     end)
     {:ok, v}
   end
@@ -34,6 +35,18 @@ defmodule CryptoCurrencyTracker.ApiAgent do
 
   def handle_call({:put, key, val}, _from, state) do
     {:reply, :ok, Map.put(state, key, val)}
+  end
+
+  def get_price_on(currency_id, date) do
+    price = Map.get(get(currency_id).history, date)
+    if !price do
+      price = GenServer.call ApiRefresh, {:date, currency_id, date}
+      put(currency_id, Map.merge(get(currency_id), %{history: Map.put(get(currency_id).history, date, price)}))
+      price
+    else
+      price
+    end
+
   end
 
 end

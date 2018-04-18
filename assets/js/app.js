@@ -18,14 +18,15 @@ import "phoenix_html"
 // Local files can be imported directly using relative
 // paths "./socket" or full ones "web/static/js/socket".
 
-// import socket from "./socket";
+import socket from "./socket";
 
 import crypto_tracker_init from "./cs/crypto_tracker";
 
 function start() {
   let root = document.getElementById('root');
   if (root) {
-    crypto_tracker_init(root);
+    let channel = socket.channel("api:", {});
+    crypto_tracker_init(root, channel);
   }
 }
 

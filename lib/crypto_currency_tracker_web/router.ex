@@ -4,6 +4,7 @@ defmodule CryptoCurrencyTrackerWeb.Router do
   pipeline :browser do
     plug(:accepts, ["html"])
     plug(:fetch_session)
+    plug :get_user
     plug(:fetch_flash)
     plug(:protect_from_forgery)
     plug(:put_secure_browser_headers)
@@ -32,11 +33,11 @@ defmodule CryptoCurrencyTrackerWeb.Router do
   end
 
   scope "/auth", CryptoCurrencyTrackerWeb do
-    pipe_through(:browser)
-
-    get("/:provider", AuthController, :request)
-    get("/:provider/callback", AuthController, :new)
-    get("/*path", RedirectController, :auth)
+    pipe_through :browser
+    pipe_through :inject_token
+    get "/:provider", AuthController, :request
+    get "/:provider/callback", AuthController, :new
+    get "/*path", RedirectController, :auth
   end
 
   scope "/", CryptoCurrencyTrackerWeb do
@@ -44,12 +45,12 @@ defmodule CryptoCurrencyTrackerWeb.Router do
     pipe_through(:browser)
     #
     pipe_through(:inject_token)
-    get("/", PageController, :index)
+    get "/", PageController, :index
     get("/*path", RedirectController, :index)
   end
 
-  # Other scopes may use custom stacks.
-  scope "/api/v1", CryptoCurrencyTrackerWeb do
-    pipe_through(:api)
+  if Mix.env == :dev do
+    forward "/sent_emails", Bamboo.EmailPreviewPlug
   end
+
 end

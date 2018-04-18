@@ -51,10 +51,12 @@ config :phoenix, :stacktrace_depth, 20
 # Configure your database
 config :crypto_currency_tracker, CryptoCurrencyTracker.Repo,
   adapter: Ecto.Adapters.Postgres,
-  username: "crypto_currency_tracker",
-  password: "crypto",
+  username: "crypto",
+  password: "ooquie2GeeWo",
   database: "crypto_currency_tracker_dev",
   hostname: "localhost",
   pool_size: 10
 
 
+config :crypto_currency_tracker, CryptoCurrencyTracker.Mailer,
+  adapter: Bamboo.LocalAdapter

@@ -7,9 +7,19 @@ use Mix.Config
 config :crypto_currency_tracker, CryptoCurrencyTrackerWeb.Endpoint,
 server: true,
   load_from_system_env: true,
-  url: [host: "cryptocoin.loopback.onl", port: 80],
+  http: [ip: {127, 0, 0, 1}, port: 4000],
   cache_static_manifest: "priv/static/cache_manifest.json",
   root: "."
 
 # Do not print debug messages in production
 config :logger, level: :info
+
+config :crypto_currency_tracker, CryptoCurrencyTracker.Mailer,
+  adapter: Bamboo.SMTPAdapter,
+  server: "email-smtp.us-east-1.amazonaws.com",
+  port: 587,
+  username: SYSTEM.get_env("SMTP_USERNAME"),
+  password: SYSTEM.get_env("SMTP_PASSWORD"),
+  tls: :always,
+  ssl: true,
+  retries: 1

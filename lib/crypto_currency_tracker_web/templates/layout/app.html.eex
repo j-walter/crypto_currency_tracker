@@ -9,25 +9,30 @@
 
     <title>Hello CryptoCurrencyTracker!</title>
     <link rel="stylesheet" href="<%= static_path(@conn, "/css/app.css") %>">
-	
+
     <%= tag :meta, name: "user_token", content: Plug.Conn.get_session(@conn, "user_token") %>
-    <%= tag :meta, name: "user_email", content: if Plug.Conn.get_session(@conn, "user_auth"), do: Plug.Conn.get_session(@conn, "user_auth").extra.raw_info.user["email"] , else: "" %>
   </head>
 
   <body>
     <div class="container">
-      <header class="header">
-        <nav role="navigation">
-        </nav>
-        <span class="logo"></span>
-      </header>
+      <nav class="navbar navbar-dark bg-dark navbar-expand">
+        <span class="navbar-brand">
+          CryptoTracker
+        </span>
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="/auth">Login With Google</a>
+          </li>
+        </ul>
+      </nav>
 
-    <%= unless is_nil(get_flash(@conn, :info)) do %>
-      <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
-    <% end %>
-    <%= unless is_nil(get_flash(@conn, :info)) do %>
-      <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>
-    <% end %>
+
+      <%= if get_flash(@conn, :info) do %>
+        <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
+      <% end %>
+      <%= if get_flash(@conn, :error) do %>
+        <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>
+      <% end %>
 
       <main role="main">
         <%= render @view_module, @view_template, assigns %>

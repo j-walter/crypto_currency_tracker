@@ -16,6 +16,7 @@ defmodule CryptoCurrencyTrackerWeb.ApiChannel do
     {:reply, {:ok, Api.get_currency_pricing(currency_id, start_date, end_date)}, socket}
   end
 
+  #Should check what if user details are nil
   def handle_in("follow_currency", %{"currency_id" => currency_id}, socket) do
     {:reply, {:ok, Api.follow_currency(currency_id, get_user_details(socket))}, socket}
   end
@@ -24,8 +25,8 @@ defmodule CryptoCurrencyTrackerWeb.ApiChannel do
     {:reply, {:ok, Api.unfollow_currency(currency_id, get_user_details(socket))}, socket}
   end
 
-  def handle_in("enable_currency_alerts", %{"currency_id" => currency_id, "threshold" => threshold, "direction" => direction}, socket) do
-    {:reply, {:ok, Api.enable_currency_alerts(currency_id, get_user_details(socket), threshold, direction)}, socket}
+  def handle_in("enable_currency_alerts", %{"currency_id" => currency_id, "thresholds" => thresholds}, socket) do
+    {:reply, {:ok, Api.enable_currency_alerts(currency_id, get_user_details(socket), thresholds)}, socket}
   end
 
   def handle_in("disable_currency_alerts", %{"currency_id" => currency_id}, socket) do
@@ -38,6 +39,10 @@ defmodule CryptoCurrencyTrackerWeb.ApiChannel do
     else
       nil
     end
+  end
+
+  def update_prices() do
+    CryptoCurrencyTrackerWeb.Endpoint.broadcast "api", "update", Api.get_currency(nil, nil)
   end
 
 end
