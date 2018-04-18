@@ -3,7 +3,7 @@ import React from 'react';
 import { Card, CardBody } from 'reactstrap';
 
 export default function Bitcoin(params) {
-    let price = params.price;
+    let price = params.price.current;
     return (
         <Card className="price_card col-3">
             <CardBody>
