@@ -5,10 +5,11 @@ import Ethereum from './ethereum';
 import Litecoin from './litecoin';
 
 export default function FollowedCurrencies(params) {
+  let btc = params.state.btc;
     //   let tasks = _.map(params.tasks, (pp) => (<Task key={pp.id} task={pp} />));
-    // here we need to get the list from params and find out what cryptos the 
+    // here we need to get the list from params and find out what cryptos the
     // user is tracking, then make a call through the api
-    let bitcoin_price = 0;
+    let bitcoin_price = btc.buy.current;
     let ethereum_price = 0;
     let litecoin_price = 0;
     let coins = (

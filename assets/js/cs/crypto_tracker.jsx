@@ -11,17 +11,25 @@ class CryptoTracker extends React.Component {
   constructor(props) {
     super(props);
     this.channel = props.channel;
-    this.state = {"btc": 0, "eth": 0, "ltc": 0};
+    this.state = {};
 
     this.channel.join()
-    .receive("ok", resp => { console.log("Joined successfully", resp) })
+    .receive("ok", this.setPrices.bind(this))
     .receive("error", resp => { console.log("Unable to join", resp) });
   }
 
+  setPrices(prices) {
+    console.log("Received prices", prices);
+    //this.setState(_.extend(this.state, prices));
+    //console.log("STATE", this.state); //TODO: take this out
+  }
+
   render() {
+    this.channel.push("get_currency").receive("ok", this.setState.bind(this));
+    console.log("State", this.state);
     return (
       <div className="row">
-        <FollowedCurrencies />
+        <FollowedCurrencies btc={btc}/>
       </div>
     );
   }
