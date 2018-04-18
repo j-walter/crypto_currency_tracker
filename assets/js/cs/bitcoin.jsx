@@ -14,7 +14,7 @@ export default class Bitcoin extends React.Component {
           <CardBody>
             <div className="text-center bitcoin">
               <h2>Bitcoin</h2>
-              <a href="/bitcoin">{price}</a>
+              <a href="/#">{price}</a>
             </div>
           </CardBody>
         </Card>

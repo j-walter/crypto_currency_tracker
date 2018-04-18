@@ -14,7 +14,7 @@ export default class Ethereum extends React.Component {
           <CardBody>
             <div className="text-center bitcoin">
               <h2>Ethereum</h2>
-              <a href="/ethereum">{price}</a>
+              <a href="/#">{price}</a>
             </div>
           </CardBody>
         </Card>

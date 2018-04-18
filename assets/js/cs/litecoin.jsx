@@ -14,7 +14,7 @@ export default class Litecoin extends React.Component {
           <CardBody>
             <div className="text-center bitcoin">
               <h2>Litecoin</h2>
-              <a href="/litecoin">{price}</a>
+              <a href="/#">{price}</a>
             </div>
           </CardBody>
         </Card>
