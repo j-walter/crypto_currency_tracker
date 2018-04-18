@@ -55,10 +55,19 @@ export default class FollowedCurrencies extends React.Component {
   }
 
   getFollow(currency, curr_id) {
-    if (currency.is_followed) {
-      return (<Button className="follow" onClick={() => this.unfollowCurrency(curr_id)}>Unfollow {curr_id}</Button>);
+    let curr = "";
+    if (curr_id == "btc") {
+      curr = "Bitcoin";
+    } else if (curr_id == "ltc") {
+      curr = "Litecoin";
     } else {
-      return (<Button className="follow" onClick={() => this.followCurrency(curr_id)}>Follow {curr_id}</Button>);
+      curr = "Ethereum";
+    }
+
+    if (currency.is_followed) {
+      return (<Button className="follow" onClick={() => this.unfollowCurrency(curr_id)}>Unfollow {curr}</Button>);
+    } else {
+      return (<Button className="follow" onClick={() => this.followCurrency(curr_id)}>Follow {curr}</Button>);
     }
   }
 
@@ -82,20 +91,19 @@ export default class FollowedCurrencies extends React.Component {
     return (<Modal isOpen={this.state.edit_modal} toggle={this.toggle_edit} >
       <ModalHeader toggle={this.toggle_edit}>Choose Crypto Currencies to Follow</ModalHeader>
       <ModalBody>
-        <div className="follow-cryptos">
-          <div className="row">
+        <div className="follow-cryptos text-center">
+          <div className="col-10 crypto-btn">
             {bitcoin_state}
           </div>
-          <div className="row">
+          <div className="col-10 crypto-btn">
             {litecoin_state}
           </div>
-          <div className="row">
+          <div className="col-10 crypto-btn">
             {ethereum_state}
           </div>
         </div>
       </ModalBody>
       <ModalFooter>
-        <Button className="btn btn-primary">Submit</Button>
         <Button color="secondary" onClick={this.toggle_edit}>Cancel</Button>
       </ModalFooter>
     </Modal>);
@@ -107,6 +115,11 @@ export default class FollowedCurrencies extends React.Component {
     let bitcoin_price = this.getPrice(this.props.prices.btc);
     let ethereum_price = this.getPrice(this.props.prices.eth);
     let litecoin_price = this.getPrice(this.props.prices.ltc);
+    let btc_hide = this.props.prices.btc.is_followed;
+    let ltc_hide = this.props.prices.ltc.is_followed;
+    let eth_hide = this.props.prices.eth.is_followed;
+
+
     let coins = (
       <div className="row cryto-container">
         <Bitcoin price={bitcoin_price} onClick={() => display_modal(this.props.prices.btc, "btc")} />
