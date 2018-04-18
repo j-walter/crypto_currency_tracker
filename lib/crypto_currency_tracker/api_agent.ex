@@ -4,6 +4,7 @@ defmodule CryptoCurrencyTracker.ApiAgent do
   alias CryptoCurrencyTracker.ApiAgent
   alias CryptoCurrencyTracker.ApiRefresh
 
+  @cb_headers ApiRefresh.cb_headers
   @digital_currencies ["btc", "ltc", "eth"]
   def digital_currencies, do: @digital_currencies
 
@@ -11,7 +12,28 @@ defmodule CryptoCurrencyTracker.ApiAgent do
     v = Enum.reduce(@digital_currencies, %{}, fn currency_id, acc ->
       Map.put(acc, currency_id, %{sell: %{current: nil}, buy: %{current: nil}, history: %{}})
     end)
+    Process.send_after(self(), {:dates, 365}, 1000)
     {:ok, v}
+  end
+ 
+  def handle_info({:dates, days}, state) do
+    if days >= 0 do
+     Process.send_after(self(), {:dates, days - 5}, 990)
+    end
+    state = Enum.reduce(state, %{}, fn curr, acc ->
+      info = elem(curr, 1)
+      |> Map.put(:history, get_year(elem(curr, 0)))
+      Map.put(acc, elem(curr, 0), info)
+    end)
+    {:noreply, state}
+  end
+
+  defp get_year(currency_id) do
+    today = DateTime.to_date(DateTime.utc_now)
+    Enum.reduce(0..5, %{}, fn i, acc ->
+      date = Date.add(today, -i)
+      Map.put(acc, Date.to_string(date), get_price(currency_id, Date.to_string(date)))
+    end)    
   end
 
   def start_link() do
@@ -40,13 +62,21 @@ defmodule CryptoCurrencyTracker.ApiAgent do
   def get_price_on(currency_id, date) do
     price = Map.get(get(currency_id).history, date)
     if !price do
-      price = GenServer.call ApiRefresh, {:date, currency_id, date}
+      price = get_price currency_id, date
       put(currency_id, Map.merge(get(currency_id), %{history: Map.put(get(currency_id).history, date, price)}))
       price
     else
       price
     end
-
+  end
+  
+  defp get_price(currency_id, date) do
+    case HTTPoison.get("https://api.coinbase.com/v2/prices/" <> currency_id <> "-USD/spot", @cb_headers, params: %{date: date}) do
+    {:ok, %{body: body, status_code: 200}} ->
+      String.to_float(Jason.decode!(body)["data"]["amount"])
+    _ ->
+      nil
+    end
   end
 
 end
