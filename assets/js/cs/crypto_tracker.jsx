@@ -3,29 +3,23 @@ import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import FollowedCurrencies from './followed_currencies';
 
-export default function crypto_tracker_init(root, channel) {
-  ReactDOM.render(<CryptoTracker channel={channel} />, root);
+export default function crypto_tracker_init(root, channel, state) {
+  ReactDOM.render(<CryptoTracker channel={channel} state={state} />, root);
 }
 
 class CryptoTracker extends React.Component {
   constructor(props) {
     super(props);
-    this.channel = props.channel;
-    this.state = {
-      btc: {},
-      ltc: {},
-      eth: {},
-      user: {},
-    };
-
-    this.channel.join()
-    .receive("ok", this.setPrices.bind(this))
-    .receive("error", resp => { console.log("Unable to join", resp) });
+    this.channel = this.props.channel;
+    this.state = this.props.state;
   }
 
-  setPrices(prices) {
-    console.log("Received prices", prices);
-    this.setState(_.extend(this.state, prices));
+  refresh() {
+    var channel = this.props.channel.push("get_currency", {"currency_id": null});
+    channel.receive("ok", state => {
+      this.setState(state);
+      return;
+    });
   }
 
   render() {

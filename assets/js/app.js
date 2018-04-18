@@ -26,7 +26,15 @@ function start() {
   let root = document.getElementById('root');
   if (root) {
     let channel = socket.channel("api:", {});
-    crypto_tracker_init(root, channel);
+    channel.join()
+      .receive("ok", state => {
+        console.log("Joined successfully", state);
+          crypto_tracker_init(root, channel, state);
+        })
+      .receive("error", resp => {
+        console.log("Unable to join", resp);
+    });
+
   }
 }
 
