@@ -26,7 +26,9 @@ class CryptoTracker extends React.Component {
     console.log("STATE", this.state);
     return (
       <div className="row">
-        <FollowedCurrencies prices={this.state}/>
+        <div className="col-lg">
+          <FollowedCurrencies prices={this.state}/>
+        </div>
       </div>
     );
   }

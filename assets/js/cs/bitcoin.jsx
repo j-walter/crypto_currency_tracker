@@ -10,7 +10,7 @@ export default class Bitcoin extends React.Component {
     render() {
       let price = this.props.price;
       return (
-        <Card className="price_card col-3">
+        <Card className="price_card col-sm">
           <CardBody>
             <div className="text-center bitcoin">
               <h2>Bitcoin</h2>
