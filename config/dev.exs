@@ -51,8 +51,8 @@ config :phoenix, :stacktrace_depth, 20
 # Configure your database
 config :crypto_currency_tracker, CryptoCurrencyTracker.Repo,
   adapter: Ecto.Adapters.Postgres,
-  username: "crypto",
-  password: "Bohy1shieMuu",
+  username: "postgres",
+  password: "postgres",
   database: "crypto_currency_tracker_dev",
   hostname: "localhost",
   pool_size: 10
