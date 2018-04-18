@@ -30,43 +30,10 @@ class CryptoTracker extends React.Component {
         <Nav user={this.state.user}/>
         <div className="row">
           <div className="col-lg">
-            <FollowedCurrencies prices={this.state}/>
+            <FollowedCurrencies prices={this.state} channel={this.channel}/>
           </div>
         </div>
       </div>
     );
   }
 }
-
-// let CryptoTracker = connect((state) => state)((props) => {
-//   return (
-//     <Router>
-//       <div>
-//         <Nav />
-//         <div className="container">
-//           <Route path="/" exact={true} render={() =>
-//             <div>
-//               {/* variable props.currencies will be  */}
-//               <FollowedCurrencies our_token={props.token}
-//                 bitcoin={_.filter(props.currencies, (pp) =>
-//                   match.params.bitcoin == "True")
-//                 }
-//                 ethereum={_.filter(props.currencies, (pp) =>
-//                   match.params.ethereum == "True")
-//                 }
-//                 litecoin={_.filter(props.currencies, (pp) =>
-//                   match.params.litecoin == "True")
-//                 } />
-//             </div>
-//           } />
-//           {/* <Route path="/users" exact={true} render={() =>
-//             <Users users={props.users} />
-//           } /> */}
-//           {/* <Route path="/users/:user_id" render={({ match }) =>
-//
-//           } /> */}
-//         </div>
-//       </div>
-//     </Router>
-//   );
-// });
