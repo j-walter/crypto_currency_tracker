@@ -8,6 +8,25 @@ defmodule CryptoCurrencyTracker.Api do
   @digital_currencies ApiAgent.digital_currencies()
 
 
+  # if currency_id is nil => return all the currency data that the active user is tracking
+  # otherwise return the specific data associated with the requested currency id
+
+  # if user details is nil
+  def get_currency(currency_id, user_details) when is_nil(currency_id) or currency_id in @digital_currencies do
+    if !!currency_id  do
+        %{currency_id => ApiAgent.get(currency_id)}
+    else
+        prices = Enum.reduce(@digital_currencies, %{}, fn currency_id, acc ->
+          if !user_details or Map.get(user_details, String.to_atom("follow_" <> currency_id)) do
+            Map.put(acc, currency_id, ApiAgent.get(currency_id))
+          else
+            acc
+          end
+        end)
+        # add user context to model
+        Map.put(prices, :user, User.client_view(user_details))
+    end
+  end
 
   def get_currency_pricing(currency_id, start_date, end_date) when currency_id in @digital_currencies do
     #assuming data format right now
