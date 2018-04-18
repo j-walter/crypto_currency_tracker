@@ -13,14 +13,14 @@ defmodule CryptoCurrencyTracker.Api do
 
   # if user details is nil
   def get_currency(currency_id, user_details) when is_nil(currency_id) or currency_id in @digital_currencies do
-    if !currency_id  do
+    if !!currency_id  do
         %{currency_id => ApiAgent.get(currency_id)}
     else
-        prices = Enum.reduce(@digital_currencies, %{}, fn currency_id, prices ->
+        prices = Enum.reduce(@digital_currencies, %{}, fn currency_id, acc ->
           if !user_details or Map.get(user_details, String.to_atom("follow_" <> currency_id)) do
-            Map.put(prices, currency_id, ApiAgent.get(currency_id))
-          else 
-            prices
+            Map.put(acc, currency_id, ApiAgent.get(currency_id))
+          else
+            acc
           end
         end)
         # add user context to model
