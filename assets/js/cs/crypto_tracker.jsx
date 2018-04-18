@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import FollowedCurrencies from './followed_currencies';
+import Nav from './nav';
 
 export default function crypto_tracker_init(root, channel, state) {
   ReactDOM.render(<CryptoTracker channel={channel} state={state} />, root);
@@ -25,9 +26,12 @@ class CryptoTracker extends React.Component {
   render() {
     console.log("STATE", this.state);
     return (
-      <div className="row">
-        <div className="col-lg">
-          <FollowedCurrencies prices={this.state}/>
+      <div>
+        <Nav />
+        <div className="row">
+          <div className="col-lg">
+            <FollowedCurrencies prices={this.state}/>
+          </div>
         </div>
       </div>
     );

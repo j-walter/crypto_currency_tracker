@@ -15,16 +15,16 @@
 
   <body>
     <div class="container">
-      <nav class="navbar navbar-dark bg-dark navbar-expand">
+      <!--<nav class="navbar navbar-dark bg-dark navbar-expand">
         <a class="navbar-brand" href="/">
           CryptoTracker
-        </span>
+        </a>
         <ul class="navbar-nav mr-auto">
           <li class="nav-item">
             <a class="nav-link" href="/auth">Log In With Google</a>
           </li>
         </ul>
-      </nav>
+      </nav>-->
 
 
       <%= if get_flash(@conn, :info) do %>
