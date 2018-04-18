@@ -2,16 +2,22 @@
 import React from 'react';
 import { Card, CardBody } from 'reactstrap';
 
-export default function Ethereum(params) {
-    let price = params.price;
-    return (
-        <Card className="col-3">
-            <CardBody>
-                <div className="text-center ethereum">
-                    <h2>Ethereum</h2>
-                    <a href="/ethereum">{price}</a>
-                </div>
-            </CardBody>
+export default class Ethereum extends React.Component {
+    constructor(props) {
+      super(props);
+    }
+
+    render() {
+      let price = this.props.price;
+      return (
+        <Card className="price_card col-3">
+          <CardBody>
+            <div className="text-center bitcoin">
+              <h2>Ethereum</h2>
+              <a href="/ethereum">{price}</a>
+            </div>
+          </CardBody>
         </Card>
-    );
+      );
+    }
 }
