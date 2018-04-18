@@ -35,13 +35,31 @@ export default class FollowedCurrencies extends React.Component {
 
   getHistory(curr_id, start, end) {
     var channel = this.props.channel.push("get_currency_pricing", { "currency_id": curr_id, "start_date": start, "end_date": end });
-    channel.receive("ok", state => {
-      this.setState(state);
-      return;
+    channel.receive("ok", resp => {
+      return resp;
     });
   }
 
-  getFollow(currency) {
+  followCurrency(curr_id) {
+    var channel = this.props.channel.push("follow_currency", { "currency_id": curr_id });
+    channel.receive("ok", resp => {
+      console.log("followed");
+    });
+  }
+
+  unfollowCurrency(curr_id) {
+    var channel = this.props.channel.push("unfollow_currency", { "currency_id": curr_id });
+    channel.receive("ok", resp => {
+      console.log("unfollowed");
+    });
+  }
+
+  getFollow(currency, curr_id) {
+    if (currency.is_followed) {
+      return (<Button className="follow" onClick={() => this.unfollowCurrency(curr_id)}>Unfollow {curr_id}</Button>);
+    } else {
+      return (<Button className="follow" onClick={() => this.followCurrency(curr_id)}>Follow {curr_id}</Button>);
+    }
   }
 
   display_crypto_modal(currency, curr_id) {
@@ -57,12 +75,22 @@ export default class FollowedCurrencies extends React.Component {
   }
 
   edit_modal() {
+    let bitcoin_state = this.getFollow(this.props.prices.btc, "btc");
+    let litecoin_state = this.getFollow(this.props.prices.ltc, "ltc");
+    let ethereum_state = this.getFollow(this.props.prices.eth, "eth");
+
     return (<Modal isOpen={this.state.edit_modal} toggle={this.toggle_edit} >
       <ModalHeader toggle={this.toggle_edit}>Choose Crypto Currencies to Follow</ModalHeader>
       <ModalBody>
         <div className="follow-cryptos">
           <div className="row">
-            <Button className="follow-btc" >Follow Bitcoin</Button>
+            {bitcoin_state}
+          </div>
+          <div className="row">
+            {litecoin_state}
+          </div>
+          <div className="row">
+            {ethereum_state}
           </div>
         </div>
       </ModalBody>
