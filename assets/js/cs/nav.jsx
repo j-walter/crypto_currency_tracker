@@ -8,15 +8,24 @@ export default class Nav extends React.Component {
     super(props);
   }
 
+  getUser(user) {
+    if (user && user.first_name) {
+      return(<a className="nav-link disabled">Welcome { user.first_name }!</a>);
+    } else {
+      return(<a className="nav-link" href="/auth">Log In With Google</a>);
+    }
+  }
+
   render() {
+    let user_name = this.getUser(this.props.user);
     return (
-      <nav class="navbar navbar-dark bg-dark navbar-expand">
-        <a class="navbar-brand" href="/">
+      <nav className="navbar navbar-dark bg-dark navbar-expand">
+        <a className="navbar-brand" href="/">
           CryptoTracker
         </a>
-        <ul class="navbar-nav mr-auto">
-          <li class="nav-item">
-            <a class="nav-link" href="/auth">Log In With Google</a>
+        <ul className="navbar-nav mr-auto">
+          <li className="nav-item">
+            { user_name }
           </li>
         </ul>
       </nav>
