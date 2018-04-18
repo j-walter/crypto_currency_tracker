@@ -7,6 +7,7 @@ defmodule CryptoCurrencyTracker.ApiRefresh do
 
   @cb_headers ["CB-VERSION": "2016-02-18"]
   @cb_options [ssl: [{:versions, [:'tlsv1.2']}], recv_timeout: 500]
+  def cb_headers, do: @cb_headers
 
   def init(v) do
     handle_info(:poll, self())
@@ -45,13 +46,13 @@ defmodule CryptoCurrencyTracker.ApiRefresh do
     {:noreply, state}
   end
 
-  def handle_call({:date, currency_id, date}, _from, state) do
-    case HTTPoison.get("https://api.coinbase.com/v2/prices/" <> currency_id <> "-USD/spot", @cb_headers, params: %{date: date}) do
-    {:ok, %{body: body, status_code: 200}} ->
-      {:reply, String.to_float(Jason.decode!(body)["data"]["amount"]), state}
-    _ ->
-      {:noreply, state}
-    end 
-  end
+  #def handle_call({:date, currency_id, date}, _from, state) do
+  #  case HTTPoison.get("https://api.coinbase.com/v2/prices/" <> currency_id <> "-USD/spot", @cb_headers, params: %{date: date}) do
+  #  {:ok, %{body: body, status_code: 200}} ->
+  #    {:reply, String.to_float(Jason.decode!(body)["data"]["amount"]), state}
+  #  _ ->
+  #    {:noreply, state}
+  #  end 
+  #end
 
 end

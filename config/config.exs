@@ -27,7 +27,7 @@ config :logger, :console,
 
 config :ueberauth, Ueberauth,
   providers: [
-    google: {Ueberauth.Strategy.Google, [callback_url: "http://localhost:4000/auth/google/callback"]}
+    google: {Ueberauth.Strategy.Google, [callback_url: "http://localhost:4000/auth/google/callback", default_scope: "email profile"]}
   ]
 
 import_config "gauth.secret.exs"
