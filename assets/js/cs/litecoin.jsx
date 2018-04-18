@@ -3,7 +3,7 @@ import React from 'react';
 import { Card, CardBody } from 'reactstrap';
 
 export default function Litecoin(params) {
-    let price = params.price.current;
+    let price = params.price;
     return (
         <Card className="col-3">
             <CardBody>

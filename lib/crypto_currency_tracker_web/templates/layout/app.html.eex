@@ -21,7 +21,7 @@
         </span>
         <ul class="navbar-nav mr-auto">
           <li class="nav-item">
-            <a class="nav-link" href="/auth">Login With Google</a>
+            <a class="nav-link" href="/auth">Log In With Google</a>
           </li>
         </ul>
       </nav>
