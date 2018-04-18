@@ -11,10 +11,22 @@ export default class FollowedCurrencies extends React.Component {
     this.my_channel = this.props.channel;
     this.state = {
       edit_modal: false,
-      display_modal: false
+      display_modal: false,
+      alert_modal: false,
+      high_val: 0,
+      low_val: 0,
+      curr_id: ""
     };
     this.toggle_edit = this.toggle_edit.bind(this);
     this.toggle_disp = this.toggle_disp.bind(this);
+    this.toggle_alerts = this.toggle_alerts.bind(this);
+    this.handleHighChange = this.handleHighChange.bind(this);
+    this.handleLowChange = this.handleLowChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  toggle_alerts() {
+    this.setState({ alert_modal: !this.state.alert_modal });
   }
 
   toggle_edit() {
@@ -81,6 +93,8 @@ export default class FollowedCurrencies extends React.Component {
     start_date.setDate(curr_date - 7);
 
     let history = this.getHistory(curr_id, start_date, end_date);
+
+    // putting modal info here alert_modal(curr_id)
   }
 
   edit_modal() {
@@ -109,17 +123,57 @@ export default class FollowedCurrencies extends React.Component {
     </Modal>);
   }
 
+  handleHighChange(event) {
+    this.setState({high_val: event.target.value});
+  }
+
+  handleLowChange(event) {
+    this.setState({low_val: event.target.value});
+  }
+
+  handleSubmit(event) {
+    var channel = this.props.channel.push("enable_currency_alerts", { "currency_id": curr_id, "thresholds": {"threshold1": this.state.high_val, "threshold2": this.state.low_val} });
+    channel.receive("ok", resp => {
+      console.log(resp);
+    });
+    event.preventDefault();
+  }
+
+  alert_modal(curr_id) {
+    this.setState({curr_id: curr_id})
+    return (
+      <Modal className="alert-modal" isOpen={this.state.alert_modal} toggle={this.toggle_alert} >
+        <ModalHeader toggle={this.toggle_alert}>Get Email Alerts When Prices Pass a Set Threshold</ModalHeader>
+        <ModalBody>
+          <div className="alert-cryptos text-center">
+            <Form onSubmit={this.handleSubmit}>
+              <FormGroup>
+                <Label for="high">High Threshold</Label>
+                <Input className="num-input" type="number" name="number" id="high" value={this.state.high_val} onChange={this.handleHighChange} placeholder="Enter a number..." />
+              </FormGroup>
+              <FormGroup>
+                <Label for="low">Low Threshold</Label>
+                <Input className="num-input" type="number" name="number" value={this.state.low_val} id="low" onChange={this.handleLowChange} placeholder="Enter a number..." />
+              </FormGroup>
+              <Input type="submit" value="Submit" />
+            </Form>
+          </div>
+        </ModalBody>
+        <ModalFooter>
+          {/* <Button color="primary" onClick={() => }>Submit</Button> */}
+          <Button color="secondary" onClick={this.toggle_alerts}>Cancel</Button>
+        </ModalFooter>
+      </Modal>);
+  }
+
   render() {
     // here we need to get the list from params and find out what cryptos the
     // user is tracking, then make a call through the api
     let bitcoin_price = this.getPrice(this.props.prices.btc);
     let ethereum_price = this.getPrice(this.props.prices.eth);
     let litecoin_price = this.getPrice(this.props.prices.ltc);
-    let btc_hide = this.props.prices.btc.is_followed;
-    let ltc_hide = this.props.prices.ltc.is_followed;
-    let eth_hide = this.props.prices.eth.is_followed;
 
-
+    // TODO: only display followed currencies for a signed in user
     let coins = (
       <div className="row cryto-container">
         <Bitcoin price={bitcoin_price} onClick={() => display_modal(this.props.prices.btc, "btc")} />
@@ -127,11 +181,14 @@ export default class FollowedCurrencies extends React.Component {
         <Ethereum price={ethereum_price} onClick={() => display_modal(this.props.prices.eth, "eth")} />
       </div>);
     let edit = this.edit_modal();
+    let alerting = this.alert_modal("btc");
     return (
       <div className="coins-div">
         {coins}
-        <Button className="btn btn-primary" onClick={this.toggle_edit} >Edit Cryptos</Button>
+        <Button className="btn btn-primary" onClick={this.toggle_edit}>Edit Cryptos</Button>
+        <Button className="btn-secondary btn" onClick={this.toggle_alerts}>Manage Alerts</Button>
         {edit}
+        {alerting}
       </div>
     );
   }
