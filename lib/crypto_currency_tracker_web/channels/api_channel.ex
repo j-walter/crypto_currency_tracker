@@ -26,10 +26,17 @@ defmodule CryptoCurrencyTrackerWeb.ApiChannel do
   end
 
   def handle_in("enable_currency_alerts", %{"currency_id" => currency_id, "thresholds" => thresholds}, socket) do
-    {td1, _} = Float.parse thresholds["threshold1"]
-    {td2, _} = Float.parse thresholds["threshold2"]
-    thresholds = [td1, td2]
+    thresholds = [get_float(thresholds["threshold1"]), get_float(thresholds["threshold2"])]
     {:reply, {:ok, %{alert: Api.enable_currency_alerts(currency_id, get_user_details(socket), thresholds)}}, socket}
+  end
+
+  defp get_float(num) do
+    if is_number(num) do
+      num / 1
+    else
+      {num, _} = Float.parse num
+      num
+    end
   end
 
   def handle_in("disable_currency_alerts", %{"currency_id" => currency_id}, socket) do
