@@ -70,5 +70,14 @@ defmodule CryptoCurrencyTracker.Alert do
     end
   end
 
-
+  def client_view(alert) do
+    if !!alert do
+      %{digital_currency: alert.digital_currency,
+        threshold1: alert.threshold1,
+        threshold2: alert.threshold2}
+    else
+      nil
+    end
+  end
+  
 end
