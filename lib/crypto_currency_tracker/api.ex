@@ -37,17 +37,11 @@ defmodule CryptoCurrencyTracker.Api do
   end
 
   def follow_currency(currency_id, user_details) when not is_nil(user_details) and currency_id in @digital_currencies do
-   change_user(Map.get(user_details, :id), "follow_#{currency_id}", true)
+   User.change(Map.get(user_details, :id), "follow_#{currency_id}", true)
   end
 
   def unfollow_currency(currency_id, user_details) when not is_nil(user_details) and currency_id in @digital_currencies do
-    change_user(Map.get((user_details), :id), "follow_#{currency_id}", false)
-  end
-
-  defp change_user(user_id, change_key, value) do
-    Repo.get!(User, user_id)
-    |> Ecto.Changeset.cast(%{change_key => value}, [String.to_atom(change_key)])
-    |> Repo.update!
+    User.change(Map.get((user_details), :id), "follow_#{currency_id}", false)
   end
 
   def enable_currency_alerts(currency_id, user_details, thresholds) when not is_nil(user_details) and currency_id in @digital_currencies do

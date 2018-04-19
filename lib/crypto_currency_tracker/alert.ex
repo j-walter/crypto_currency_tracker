@@ -79,5 +79,5 @@ defmodule CryptoCurrencyTracker.Alert do
       nil
     end
   end
-  
+
 end
