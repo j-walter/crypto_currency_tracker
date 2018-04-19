@@ -55,7 +55,7 @@ export default class FollowedCurrencies extends React.Component {
   followCurrency(curr_id) {
     var channel = this.props.channel.push("follow_currency", { "currency_id": curr_id });
     channel.receive("ok", resp => {
-      console.log("followed");
+      console.log(resp);
     });
   }
 
@@ -77,7 +77,7 @@ export default class FollowedCurrencies extends React.Component {
     }
 
     if (currency.is_followed) {
-      return (<Button className="follow" onClick={() => this.unfollowCurrency(curr_id)}>Unfollow {curr}</Button>);
+      return (<Button className="unfollow" onClick={() => this.unfollowCurrency(curr_id)}>Unfollow {curr}</Button>);
     } else {
       return (<Button className="follow" onClick={() => this.followCurrency(curr_id)}>Follow {curr}</Button>);
     }
@@ -132,6 +132,7 @@ export default class FollowedCurrencies extends React.Component {
   }
 
   handleSubmit(event) {
+    let curr_id = event.target.curr_id;
     var channel = this.props.channel.push("enable_currency_alerts", { "currency_id": curr_id, "thresholds": {"threshold1": this.state.high_val, "threshold2": this.state.low_val} });
     channel.receive("ok", resp => {
       console.log(resp);
@@ -140,7 +141,6 @@ export default class FollowedCurrencies extends React.Component {
   }
 
   alert_modal(curr_id) {
-    this.setState({curr_id: curr_id})
     return (
       <Modal className="alert-modal" isOpen={this.state.alert_modal} toggle={this.toggle_alert} >
         <ModalHeader toggle={this.toggle_alert}>Get Email Alerts When Prices Pass a Set Threshold</ModalHeader>
@@ -155,7 +155,7 @@ export default class FollowedCurrencies extends React.Component {
                 <Label for="low">Low Threshold</Label>
                 <Input className="num-input" type="number" name="number" value={this.state.low_val} id="low" onChange={this.handleLowChange} placeholder="Enter a number..." />
               </FormGroup>
-              <Input type="submit" value="Submit" />
+              <Input type="submit" value="Submit" curr_id={curr_id} />
             </Form>
           </div>
         </ModalBody>
