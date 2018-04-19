@@ -15,7 +15,7 @@ export default class FollowedCurrencies extends React.Component {
       alert_modal: false,
       high_val: 0,
       low_val: 0,
-      curr_id: ""
+      user: this.props.prices.user
     };
     this.toggle_edit = this.toggle_edit.bind(this);
     this.toggle_disp = this.toggle_disp.bind(this);
@@ -56,17 +56,44 @@ export default class FollowedCurrencies extends React.Component {
     var channel = this.props.channel.push("follow_currency", { "currency_id": curr_id });
     channel.receive("ok", resp => {
       console.log(resp);
+      this.props.updateUser(resp);
     });
   }
 
   unfollowCurrency(curr_id) {
     var channel = this.props.channel.push("unfollow_currency", { "currency_id": curr_id });
     channel.receive("ok", resp => {
-      console.log("unfollowed");
+      console.log(resp);
+      this.props.updateUser(resp);
     });
   }
 
-  getFollow(currency, curr_id) {
+  getFollow(curr_id) {
+    if (this.state.user) {
+      let user = this.state.user;
+      if (curr_id == "btc") {
+        if (user.follow_btc) {
+          return true;
+        } else {
+          return false;
+        }
+      } else if (curr_id == "ltc") {
+        if (user.follow_ltc) {
+          return true;
+        } else {
+          return false;
+        }
+      } else {
+        if (user.follow_eth) {
+          return true;
+        } else {
+          return false;
+        }
+      }
+    }
+  }
+
+  getFollowBtn(currency, curr_id) {
     let curr = "";
     if (curr_id == "btc") {
       curr = "Bitcoin";
@@ -76,7 +103,7 @@ export default class FollowedCurrencies extends React.Component {
       curr = "Ethereum";
     }
 
-    if (currency.is_followed) {
+    if (this.getFollow(curr_id)) {
       return (<Button className="unfollow" onClick={() => this.unfollowCurrency(curr_id)}>Unfollow {curr}</Button>);
     } else {
       return (<Button className="follow" onClick={() => this.followCurrency(curr_id)}>Follow {curr}</Button>);
@@ -98,9 +125,9 @@ export default class FollowedCurrencies extends React.Component {
   }
 
   edit_modal() {
-    let bitcoin_state = this.getFollow(this.props.prices.btc, "btc");
-    let litecoin_state = this.getFollow(this.props.prices.ltc, "ltc");
-    let ethereum_state = this.getFollow(this.props.prices.eth, "eth");
+    let bitcoin_state = this.getFollowBtn(this.props.prices.btc, "btc");
+    let litecoin_state = this.getFollowBtn(this.props.prices.ltc, "ltc");
+    let ethereum_state = this.getFollowBtn(this.props.prices.eth, "eth");
 
     return (<Modal isOpen={this.state.edit_modal} toggle={this.toggle_edit} >
       <ModalHeader toggle={this.toggle_edit}>Choose Crypto Currencies to Follow</ModalHeader>
@@ -124,16 +151,16 @@ export default class FollowedCurrencies extends React.Component {
   }
 
   handleHighChange(event) {
-    this.setState({high_val: event.target.value});
+    this.setState({ high_val: event.target.value });
   }
 
   handleLowChange(event) {
-    this.setState({low_val: event.target.value});
+    this.setState({ low_val: event.target.value });
   }
 
   handleSubmit(event) {
     let curr_id = event.target.curr_id;
-    var channel = this.props.channel.push("enable_currency_alerts", { "currency_id": curr_id, "thresholds": {"threshold1": this.state.high_val, "threshold2": this.state.low_val} });
+    var channel = this.props.channel.push("enable_currency_alerts", { "currency_id": curr_id, "thresholds": { "threshold1": this.state.high_val, "threshold2": this.state.low_val } });
     channel.receive("ok", resp => {
       console.log(resp);
     });
@@ -180,16 +207,26 @@ export default class FollowedCurrencies extends React.Component {
         <Litecoin price={litecoin_price} onClick={() => display_modal(this.props.prices.ltc, "ltc")} />
         <Ethereum price={ethereum_price} onClick={() => display_modal(this.props.prices.eth, "eth")} />
       </div>);
+    
     let edit = this.edit_modal();
     let alerting = this.alert_modal("btc");
-    return (
-      <div className="coins-div">
-        {coins}
-        <Button className="btn btn-primary" onClick={this.toggle_edit}>Edit Cryptos</Button>
-        <Button className="btn-secondary btn" onClick={this.toggle_alerts}>Manage Alerts</Button>
-        {edit}
-        {alerting}
-      </div>
-    );
+
+    if (this.state.user != null) {
+      return (
+        <div className="coins-div">
+          {coins}
+          <Button className="btn btn-primary" onClick={this.toggle_edit}>Edit Cryptos</Button>
+          <Button className="btn-secondary btn" onClick={this.toggle_alerts}>Manage Alerts</Button>
+          {edit}
+          {alerting}
+        </div>
+      );
+    } else {
+      return (
+        <div className="coins-div">
+          {coins}
+        </div>
+      );
+    }
   }
 }

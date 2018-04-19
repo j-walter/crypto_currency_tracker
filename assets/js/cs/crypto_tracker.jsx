@@ -15,6 +15,11 @@ class CryptoTracker extends React.Component {
     this.state = this.props.state;
   }
 
+  updateUser(user) {
+    console.log("Set user: " + user);
+    this.setState({user: user});
+  }
+
   refresh() {
     var channel = this.props.channel.push("get_currency", {"currency_id": null});
     channel.receive("ok", state => {
@@ -30,7 +35,7 @@ class CryptoTracker extends React.Component {
         <Nav user={this.state.user}/>
         <div className="row">
           <div className="col-lg">
-            <FollowedCurrencies prices={this.state} channel={this.channel}/>
+            <FollowedCurrencies prices={this.state} channel={this.channel} updateUser={this.updateUser.bind(this)}/>
           </div>
         </div>
       </div>
