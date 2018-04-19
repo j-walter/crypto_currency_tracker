@@ -200,11 +200,11 @@ export default class FollowedCurrencies extends React.Component {
     // TODO: only display followed currencies for a signed in user
     let coins = (
       <div className="row cryto-container">
-        <Bitcoin price={bitcoin_price} onClick={() => display_modal(this.props.prices.btc, "btc")} />
+        <Bitcoin price={bitcoin_price} channel={this.props.channel} onClick={() => display_modal(this.props.prices.btc, "btc")} />
         <Litecoin price={litecoin_price} onClick={() => display_modal(this.props.prices.ltc, "ltc")} />
         <Ethereum price={ethereum_price} onClick={() => display_modal(this.props.prices.eth, "eth")} />
       </div>);
-    
+
     let edit = this.edit_modal();
     let alerting = this.alert_modal("btc");
 
@@ -213,7 +213,7 @@ export default class FollowedCurrencies extends React.Component {
         <div className="coins-div">
           {coins}
           <Button className="btn btn-primary" onClick={this.toggle_edit}>Edit Cryptos</Button>
-          <Button className="btn-secondary btn" onClick={this.toggle_alerts}>Manage Alerts</Button>
+          <Button className="btn-secondary btn" onClick={this.toggle_alerts} >Manage Alerts</Button>
           {edit}
           {alerting}
         </div>
