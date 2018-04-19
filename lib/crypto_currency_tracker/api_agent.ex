@@ -17,21 +17,21 @@ defmodule CryptoCurrencyTracker.ApiAgent do
   end
  
   def handle_info({:dates, days}, state) do
-    if days >= 0 do
-     Process.send_after(self(), {:dates, days - 5}, 990)
+    if days > 0 do
+     Process.send_after(self(), {:dates, days - 5}, 2 * 1000)
     end
     state = Enum.reduce(state, %{}, fn curr, acc ->
-      info = elem(curr, 1)
-      |> Map.put(:history, get_year(elem(curr, 0)))
+      start = Date.add(DateTime.to_date(DateTime.utc_now), -days)
+      history = elem(curr, 1) |> Map.get(:history)
+      info = elem(curr, 1) |> Map.put(:history, Map.merge(history, get_five(elem(curr, 0), start)))
       Map.put(acc, elem(curr, 0), info)
     end)
     {:noreply, state}
   end
 
-  defp get_year(currency_id) do
-    today = DateTime.to_date(DateTime.utc_now)
+  defp get_five(currency_id, start) do
     Enum.reduce(0..5, %{}, fn i, acc ->
-      date = Date.add(today, -i)
+      date = Date.add(start, i)
       Map.put(acc, Date.to_string(date), get_price(currency_id, Date.to_string(date)))
     end)    
   end
