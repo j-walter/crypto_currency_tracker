@@ -45,7 +45,10 @@ defmodule CryptoCurrencyTracker.User do
     if !!user do
       %{first_name: user.first_name,
         last_name: user.last_name,
-        email: user.email}
+        email: user.email,
+        follow_btc: user.follow_btc || false,
+        follow_ltc: user.follow_ltc || false,
+        follow_eth: user.follow_eth || false}
     else
       nil
     end
