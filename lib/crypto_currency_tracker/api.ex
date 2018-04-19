@@ -48,29 +48,14 @@ defmodule CryptoCurrencyTracker.Api do
     Repo.get!(User, user_id)
     |> Ecto.Changeset.cast(%{change_key => value}, [String.to_atom(change_key)])
     |> Repo.update!
-    |> Map.from_struct
-    |> Map.delete(:__meta__)
-    |> Map.delete(:inserted_at)
-    |> Map.delete(:updated_at)
   end
 
-
   def enable_currency_alerts(currency_id, user_details, thresholds) when not is_nil(user_details) and currency_id in @digital_currencies do
-    response = Alert.insert_or_update(currency_id, user_details, thresholds)
-    if !!response do
-      Enum.reject([response.threshold1, response.threshold2], &is_nil/1)
-    else
-      response
-    end
+    Alert.insert_or_update(currency_id, user_details, thresholds)
   end
 
   def disable_currency_alerts(currency_id, user_details) when not is_nil(user_details) and currency_id in @digital_currencies do
-    response = Alert.delete(currency_id, user_details)
-    if !!response do
-      []
-    else
-      response
-    end
+    Alert.delete(currency_id, user_details)
   end
 
 end
