@@ -17,7 +17,7 @@ class CryptoTracker extends React.Component {
 
   updateUser(user) {
     console.log("Set user: " + user);
-    this.setState({user: user});
+    this.setState(user);
   }
 
   refresh() {
