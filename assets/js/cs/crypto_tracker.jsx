@@ -17,14 +17,16 @@ class CryptoTracker extends React.Component {
 
   updateUser(user) {
     console.log("Set user: " + user);
-    this.setState(user);
+    this.setState(Object.assign({}, user), () => console.log(this.state));
+    console.log(this.state.user);
+    // this.refresh();
   }
 
   refresh() {
     var channel = this.props.channel.push("get_currency", {"currency_id": null});
     channel.receive("ok", state => {
       this.setState(state);
-      return;
+      // return;
     });
   }
 

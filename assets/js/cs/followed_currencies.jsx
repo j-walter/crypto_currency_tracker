@@ -8,14 +8,12 @@ import Litecoin from './litecoin';
 export default class FollowedCurrencies extends React.Component {
   constructor(props) {
     super(props);
-    this.my_channel = this.props.channel;
     this.state = {
       edit_modal: false,
       display_modal: false,
       alert_modal: false,
       high_val: 0,
-      low_val: 0,
-      user: this.props.prices.user
+      low_val: 0
     };
     this.toggle_edit = this.toggle_edit.bind(this);
     this.toggle_disp = this.toggle_disp.bind(this);
@@ -69,22 +67,21 @@ export default class FollowedCurrencies extends React.Component {
   }
 
   getFollow(curr_id) {
-    if (this.state.user) {
-      let user = this.state.user;
+    if (this.props.prices.user != null) {
       if (curr_id == "btc") {
-        if (user.follow_btc) {
+        if (this.props.prices.user.follow_btc) {
           return true;
         } else {
           return false;
         }
       } else if (curr_id == "ltc") {
-        if (user.follow_ltc) {
+        if (this.props.prices.user.follow_ltc) {
           return true;
         } else {
           return false;
         }
       } else {
-        if (user.follow_eth) {
+        if (this.props.prices.user.follow_eth) {
           return true;
         } else {
           return false;
@@ -211,7 +208,7 @@ export default class FollowedCurrencies extends React.Component {
     let edit = this.edit_modal();
     let alerting = this.alert_modal("btc");
 
-    if (this.state.user != null) {
+    if (this.props.prices.user != null) {
       return (
         <div className="coins-div">
           {coins}
