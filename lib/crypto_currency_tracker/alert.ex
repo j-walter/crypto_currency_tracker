@@ -28,13 +28,8 @@ defmodule CryptoCurrencyTracker.Alert do
     |> validate_inclusion(:digital_currency, ApiAgent.digital_currencies())
   end
 
-  def get(currency_id, user_details) do
-    case Repo.get_by(Alert, digital_currency: currency_id, user_id: user_details.id) do
-     {:ok, alert} ->
-        alert
-     _ ->
-      %Alert{}
-    end
+  def get(currency_id, user_details) when not is_nil(user_details) do
+    from(alert in Alert, where: alert.user_id == ^user_details.id and alert.digital_currency == ^currency_id) |> Repo.one()
   end
 
   def insert_or_update(currency_id, user_details, thresholds) when not is_nil(currency_id) and not is_nil(user_details) and is_list(thresholds) do

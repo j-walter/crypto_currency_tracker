@@ -17,7 +17,7 @@ defmodule CryptoCurrencyTracker.Api do
         %{currency_id => ApiAgent.get(currency_id)}
     else
         prices = Enum.reduce(@digital_currencies, %{}, fn currency_id, acc ->
-          Map.put(acc, currency_id, ApiAgent.get(currency_id))
+          Map.put(Map.put(acc, currency_id, ApiAgent.get(currency_id)), :alerts, Map.merge(Map.get(acc, :alerts, %{}), %{currency_id => (if !!user_details, do: Alert.client_view(Alert.get(currency_id, user_details)), else: nil)}))
         end)
         # add user context to model
         Map.put(prices, :user, User.client_view(user_details))
