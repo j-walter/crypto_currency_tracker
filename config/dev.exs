@@ -52,7 +52,7 @@ config :phoenix, :stacktrace_depth, 20
 config :crypto_currency_tracker, CryptoCurrencyTracker.Repo,
   adapter: Ecto.Adapters.Postgres,
   username: "crypto",
-  password: "ooquie2GeeWo",
+  password: "Bohy1shieMuu",
   database: "crypto_currency_tracker_dev",
   hostname: "localhost",
   pool_size: 10

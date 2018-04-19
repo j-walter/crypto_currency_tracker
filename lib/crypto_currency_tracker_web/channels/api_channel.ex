@@ -18,19 +18,19 @@ defmodule CryptoCurrencyTrackerWeb.ApiChannel do
 
   #Should check what if user details are nil
   def handle_in("follow_currency", %{"currency_id" => currency_id}, socket) do
-    {:reply, {:ok, Api.follow_currency(currency_id, get_user_details(socket))}, socket}
+    {:reply, {:ok, %{user: Api.follow_currency(currency_id, get_user_details(socket))}}, socket}
   end
 
   def handle_in("unfollow_currency", %{"currency_id" => currency_id}, socket) do
-    {:reply, {:ok, Api.unfollow_currency(currency_id, get_user_details(socket))}, socket}
+    {:reply, {:ok, %{user: Api.unfollow_currency(currency_id, get_user_details(socket))}}, socket}
   end
 
   def handle_in("enable_currency_alerts", %{"currency_id" => currency_id, "thresholds" => thresholds}, socket) do
-    {:reply, {:ok, Api.enable_currency_alerts(currency_id, get_user_details(socket), thresholds)}, socket}
+    {:reply, {:ok, %{alert: Api.enable_currency_alerts(currency_id, get_user_details(socket), thresholds)}}, socket}
   end
 
   def handle_in("disable_currency_alerts", %{"currency_id" => currency_id}, socket) do
-    {:reply, {:ok, Api.disable_currency_alerts(currency_id, get_user_details(socket))}, socket}
+    {:reply, {:ok, %{alert: Api.disable_currency_alerts(currency_id, get_user_details(socket))}}, socket}
   end
 
   defp get_user_details(socket) do
