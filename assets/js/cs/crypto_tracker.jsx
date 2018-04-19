@@ -24,7 +24,6 @@ class CryptoTracker extends React.Component {
     var channel = this.props.channel.push("get_currency", {"currency_id": null});
     channel.receive("ok", state => {
       this.setState(state);
-      return;
     });
   }
 

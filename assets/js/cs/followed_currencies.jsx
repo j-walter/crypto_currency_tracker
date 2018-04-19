@@ -10,21 +10,10 @@ export default class FollowedCurrencies extends React.Component {
     super(props);
     this.state = {
       edit_modal: false,
-      display_modal: false,
-      alert_modal: false,
-      high_val: 0,
-      low_val: 0
+      display_modal: false
     };
     this.toggle_edit = this.toggle_edit.bind(this);
     this.toggle_disp = this.toggle_disp.bind(this);
-    this.toggle_alerts = this.toggle_alerts.bind(this);
-    this.handleHighChange = this.handleHighChange.bind(this);
-    this.handleLowChange = this.handleLowChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-  }
-
-  toggle_alerts() {
-    this.setState({ alert_modal: !this.state.alert_modal });
   }
 
   toggle_edit() {
@@ -67,6 +56,7 @@ export default class FollowedCurrencies extends React.Component {
   }
 
   getFollow(curr_id) {
+    console.log("In getFollow: ", this.props.prices);
     if (this.props.prices.user != null) {
       if (curr_id == "btc") {
         if (this.props.prices.user.follow_btc) {
@@ -117,8 +107,6 @@ export default class FollowedCurrencies extends React.Component {
     start_date.setDate(curr_date - 7);
 
     let history = this.getHistory(curr_id, start_date, end_date);
-
-    // putting modal info here alert_modal(curr_id)
   }
 
   edit_modal() {
@@ -147,49 +135,6 @@ export default class FollowedCurrencies extends React.Component {
     </Modal>);
   }
 
-  handleHighChange(event) {
-    this.setState({ high_val: event.target.value });
-  }
-
-  handleLowChange(event) {
-    this.setState({ low_val: event.target.value });
-  }
-
-  handleSubmit(event) {
-    let curr_id = event.target.curr_id;
-    var channel = this.props.channel.push("enable_currency_alerts", { "currency_id": curr_id, "thresholds": { "threshold1": this.state.high_val, "threshold2": this.state.low_val } });
-    channel.receive("ok", resp => {
-      console.log(resp);
-    });
-    event.preventDefault();
-  }
-
-  alert_modal(curr_id) {
-    return (
-      <Modal className="alert-modal" isOpen={this.state.alert_modal} toggle={this.toggle_alert} >
-        <ModalHeader toggle={this.toggle_alert}>Get Email Alerts When Prices Pass a Set Threshold</ModalHeader>
-        <ModalBody>
-          <div className="alert-cryptos text-center">
-            <Form onSubmit={this.handleSubmit}>
-              <FormGroup>
-                <Label for="high">High Threshold</Label>
-                <Input className="num-input" type="number" name="number" id="high" value={this.state.high_val} onChange={this.handleHighChange} placeholder="Enter a number..." />
-              </FormGroup>
-              <FormGroup>
-                <Label for="low">Low Threshold</Label>
-                <Input className="num-input" type="number" name="number" value={this.state.low_val} id="low" onChange={this.handleLowChange} placeholder="Enter a number..." />
-              </FormGroup>
-              <Input type="submit" value="Submit" curr_id={curr_id} />
-            </Form>
-          </div>
-        </ModalBody>
-        <ModalFooter>
-          {/* <Button color="primary" onClick={() => }>Submit</Button> */}
-          <Button color="secondary" onClick={this.toggle_alerts}>Cancel</Button>
-        </ModalFooter>
-      </Modal>);
-  }
-
   render() {
     // here we need to get the list from params and find out what cryptos the
     // user is tracking, then make a call through the api
@@ -197,33 +142,38 @@ export default class FollowedCurrencies extends React.Component {
     let ethereum_price = this.getPrice(this.props.prices.eth);
     let litecoin_price = this.getPrice(this.props.prices.ltc);
 
+    let user_exist = false;
+
+    if (this.props.prices.user) {
+      user_exist = true;
+    } else {
+      user_exist = false;
+    }
+
     // TODO: only display followed currencies for a signed in user
     let coins = (
       <div className="row cryto-container">
-        <Bitcoin price={bitcoin_price} channel={this.props.channel} onClick={() => display_modal(this.props.prices.btc, "btc")} />
-        <Litecoin price={litecoin_price} channel={this.props.channel} onClick={() => display_modal(this.props.prices.ltc, "ltc")} />
-        <Ethereum price={ethereum_price} channel={this.props.channel} onClick={() => display_modal(this.props.prices.eth, "eth")} />
+        <Bitcoin price={bitcoin_price} channel={this.props.channel} ifUser={user_exist} onClick={() => display_modal(this.props.prices.btc, "btc")} />
+        <Litecoin price={litecoin_price} channel={this.props.channel} ifUser={user_exist} onClick={() => display_modal(this.props.prices.ltc, "ltc")} />
+        <Ethereum price={ethereum_price} channel={this.props.channel} ifUser={user_exist} onClick={() => display_modal(this.props.prices.eth, "eth")} />
       </div>);
 
-    let edit = this.edit_modal();
-    let alerting = this.alert_modal("btc");
+    let edit = (<div></div>);
 
     if (this.props.prices.user != null) {
-      return (
-        <div className="coins-div">
-          {coins}
+      edit = (
+        <div>
           <Button className="btn btn-primary" onClick={this.toggle_edit}>Edit Cryptos</Button>
-          <Button className="btn-secondary btn" onClick={this.toggle_alerts} >Manage Alerts</Button>
-          {edit}
-          {alerting}
-        </div>
-      );
-    } else {
-      return (
-        <div className="coins-div">
-          {coins}
+          {this.edit_modal()}
         </div>
       );
     }
+
+    return (
+      <div className="coins-div">
+        {coins}
+        {edit}
+      </div>
+    );
   }
 }
