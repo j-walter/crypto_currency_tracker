@@ -201,8 +201,8 @@ export default class FollowedCurrencies extends React.Component {
     let coins = (
       <div className="row cryto-container">
         <Bitcoin price={bitcoin_price} channel={this.props.channel} onClick={() => display_modal(this.props.prices.btc, "btc")} />
-        <Litecoin price={litecoin_price} onClick={() => display_modal(this.props.prices.ltc, "ltc")} />
-        <Ethereum price={ethereum_price} onClick={() => display_modal(this.props.prices.eth, "eth")} />
+        <Litecoin price={litecoin_price} channel={this.props.channel} onClick={() => display_modal(this.props.prices.ltc, "ltc")} />
+        <Ethereum price={ethereum_price} channel={this.props.channel} onClick={() => display_modal(this.props.prices.eth, "eth")} />
       </div>);
 
     let edit = this.edit_modal();
