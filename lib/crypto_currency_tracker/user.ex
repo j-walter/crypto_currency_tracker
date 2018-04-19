@@ -35,7 +35,7 @@ defmodule CryptoCurrencyTracker.User do
                           last_name: auth.extra.raw_info.user["family_name"]]],
       conflict_target: :id) do
       {:ok, user} ->
-        user
+        Repo.get(User, user.id)
       _ ->
         %{}
     end
@@ -46,9 +46,9 @@ defmodule CryptoCurrencyTracker.User do
       %{first_name: user.first_name,
         last_name: user.last_name,
         email: user.email,
-        follow_btc: user.follow_btc || false,
-        follow_ltc: user.follow_ltc || false,
-        follow_eth: user.follow_eth || false}
+        follow_btc: user.follow_btc,
+        follow_ltc: user.follow_ltc,
+        follow_eth: user.follow_eth}
     else
       nil
     end

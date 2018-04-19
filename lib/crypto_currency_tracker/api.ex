@@ -56,20 +56,21 @@ defmodule CryptoCurrencyTracker.Api do
 
 
   def enable_currency_alerts(currency_id, user_details, thresholds) when not is_nil(user_details) and currency_id in @digital_currencies do
-    Alert.insert_or_update(currency_id, user_details, thresholds) |> process_alert
+    response = Alert.insert_or_update(currency_id, user_details, thresholds)
+    if !!response do
+      Enum.reject([response.threshold1, response.threshold2], &is_nil/1)
+    else
+      response
+    end
   end
 
   def disable_currency_alerts(currency_id, user_details) when not is_nil(user_details) and currency_id in @digital_currencies do
-    Alert.delete(currency_id, user_details) |> process_alert
-  end
-
-  defp process_alert(alert) do
-    alert 
-    |> Map.from_struct
-    |> Map.delete(:__meta__)
-    |> Map.delete(:inserted_at)
-    |> Map.delete(:updated_at)
-    |> Map.delete(:user)
+    response = Alert.delete(currency_id, user_details)
+    if !!response do
+      []
+    else
+      response
+    end
   end
 
 end
