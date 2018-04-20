@@ -41,6 +41,17 @@ defmodule CryptoCurrencyTracker.User do
     end
   end
 
+  def change(user_id, change_key, value) do
+    case Repo.get!(User, user_id)
+    |> Ecto.Changeset.cast(%{change_key => value}, [String.to_atom(change_key)])
+    |> Repo.update do
+      {:ok, user} ->
+        user
+      _ ->
+        nil
+    end
+  end
+
   def client_view(user) do
     if !!user do
       %{first_name: user.first_name,
