@@ -4,6 +4,7 @@ import { Button, Modal, ModalBody, Form, FormGroup, Label, Input, ModalFooter, M
 import Bitcoin from './bitcoin';
 import Ethereum from './ethereum';
 import Litecoin from './litecoin';
+// import Line from './line';
 
 export default class FollowedCurrencies extends React.Component {
   constructor(props) {
@@ -30,13 +31,6 @@ export default class FollowedCurrencies extends React.Component {
     } else {
       return 0;
     }
-  }
-
-  getHistory(curr_id, start, end) {
-    var channel = this.props.channel.push("get_currency_pricing", { "currency_id": curr_id, "start_date": start, "end_date": end });
-    channel.receive("ok", resp => {
-      return resp;
-    });
   }
 
   followCurrency(curr_id) {
@@ -102,11 +96,29 @@ export default class FollowedCurrencies extends React.Component {
     let curr_date = d.getDate();
     let curr_month = d.getMonth() + 1;
     let curr_year = d.getFullYear();
-    let end_date = new Date(str(curr_month) + "-" + str(curr_date) + "-" + curr_year);
-    let start_date = new Date(str(curr_month) + "-" + str(curr_date) + "-" + curr_year);
+    let end_date = new Date(curr_month + "-" + curr_date + "-" + curr_year);
+    let start_date = new Date(curr_year + "-" + curr_month + "-" + curr_date);
     start_date.setDate(curr_date - 7);
+    let end_month = curr_month;
+    let start_month = start_date.getMonth() + 1;
+    if (end_month < 10) {
+      end_month = "0" + curr_month;
+    }
+    if (start_month < 10) {
+      start_month = "0" + start_month;
+    }
+    let start_date_str = start_date.getFullYear() + "-" + start_month + "-" + (start_date.getDate());
+    let end_date_str = curr_year + "-" + end_month + "-" + curr_date;
 
-    let history = this.getHistory(curr_id, start_date, end_date);
+    let properHistory = {}
+    this.getHistory(curr_id, String(start_date_str), String(end_date_str), (history) => {
+      properHistory = Object.keys(history).map((key) => ({ date: key, price: history[key] }));
+    });
+    
+    console.log(properHistory);
+
+    // let chart = (<Line history={history} />);
+    // return (<div>{chart}</div>);
   }
 
   edit_modal() {
@@ -153,9 +165,9 @@ export default class FollowedCurrencies extends React.Component {
     // TODO: only display followed currencies for a signed in user
     let coins = (
       <div className="row cryto-container">
-        <Bitcoin price={bitcoin_price} channel={this.props.channel} ifUser={user_exist} onClick={() => display_modal(this.props.prices.btc, "btc")} />
-        <Litecoin price={litecoin_price} channel={this.props.channel} ifUser={user_exist} onClick={() => display_modal(this.props.prices.ltc, "ltc")} />
-        <Ethereum price={ethereum_price} channel={this.props.channel} ifUser={user_exist} onClick={() => display_modal(this.props.prices.eth, "eth")} />
+        <CryptoCard price={bitcoin_price} curr_id={"btc"} channel={this.props.channel} ifUser={user_exist} onClick={() => display_modal(this.props.prices.btc, "btc")} />
+        <Litecoin price={litecoin_price} curr_id={"ltc"} channel={this.props.channel} ifUser={user_exist} onClick={() => display_modal(this.props.prices.ltc, "ltc")} />
+        <Ethereum price={ethereum_price} curr_id={"eth"} channel={this.props.channel} ifUser={user_exist} onClick={() => display_modal(this.props.prices.eth, "eth")} />
       </div>);
 
     let edit = (<div></div>);
@@ -164,6 +176,7 @@ export default class FollowedCurrencies extends React.Component {
       edit = (
         <div>
           <Button className="btn btn-primary" onClick={this.toggle_edit}>Edit Cryptos</Button>
+          <Button onClick={() => this.display_crypto_modal(this.props.prices.btc, "btc")} > History </Button>
           {this.edit_modal()}
         </div>
       );

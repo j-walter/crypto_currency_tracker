@@ -2,7 +2,7 @@
 import React from 'react';
 import { Button, Modal, ModalBody, Form, FormGroup, Label, Input, ModalFooter, ModalHeader, ModalProps, Card, CardBody } from 'reactstrap';
 
-export default class Litecoin extends React.Component {
+export default class CryptoCard extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -15,6 +15,11 @@ export default class Litecoin extends React.Component {
     this.handleHighChange = this.handleHighChange.bind(this);
     this.handleLowChange = this.handleLowChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  getHistory(start, end, cb) {
+    var channel = this.props.channel.push("get_currency_pricing", { "currency_id": "btc", "start_date": start, "end_date": end });
+    channel.receive("ok", cb);
   }
 
   toggle_alerts() {
@@ -30,15 +35,14 @@ export default class Litecoin extends React.Component {
   }
 
   handleSubmit(event) {
-    let curr_id = "ltc";
-    var channel = this.props.channel.push("enable_currency_alerts", { "currency_id": curr_id, "thresholds": { "threshold1": this.state.high_val, "threshold2": this.state.low_val } });
+    var channel = this.props.channel.push("enable_currency_alerts", { "currency_id": this.props.curr_id, "thresholds": { "threshold1": this.state.high_val, "threshold2": this.state.low_val } });
     channel.receive("ok", resp => {
       console.log(resp);
     });
     event.preventDefault();
   }
 
-  alert_modal(curr_id) {
+  alert_modal() {
     return (
       <Modal className="alert-modal" isOpen={this.state.alert_modal} toggle={this.toggle_alert} >
         <ModalHeader toggle={this.toggle_alert}>Get Email Alerts When Prices Pass a Set Threshold</ModalHeader>
@@ -70,7 +74,7 @@ export default class Litecoin extends React.Component {
       alert_me = (
         <div className="set-alert">
           <Button className="btn-secondary btn" onClick={this.toggle_alerts}>Set Alert</Button>
-          {this.alert_modal("ltc")}
+          {this.alert_modal()}
         </div>
       );
     }
@@ -79,7 +83,7 @@ export default class Litecoin extends React.Component {
       <Card className="price_card col-sm">
         <CardBody>
           <div className="text-center litecoin">
-            <h2>Litecoin</h2>
+            <h2>{this.props.cryptoName}</h2>
             <a href="/#">{price}</a>
           </div>
           {alert_me}

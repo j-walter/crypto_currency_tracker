@@ -17,6 +17,11 @@ export default class Bitcoin extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
+  getHistory(start, end, cb) {
+    var channel = this.props.channel.push("get_currency_pricing", { "currency_id": "btc", "start_date": start, "end_date": end });
+    channel.receive("ok", cb);
+  }
+
   toggle_alerts() {
     this.setState({ alert_modal: !this.state.alert_modal });
   }
@@ -30,15 +35,14 @@ export default class Bitcoin extends React.Component {
   }
 
   handleSubmit(event) {
-    let curr_id = "btc";
-    var channel = this.props.channel.push("enable_currency_alerts", { "currency_id": curr_id, "thresholds": { "threshold1": this.state.high_val, "threshold2": this.state.low_val } });
+    var channel = this.props.channel.push("enable_currency_alerts", { "currency_id": "btc", "thresholds": { "threshold1": this.state.high_val, "threshold2": this.state.low_val } });
     channel.receive("ok", resp => {
       console.log(resp);
     });
     event.preventDefault();
   }
 
-  alert_modal(curr_id) {
+  alert_modal() {
     return (
       <Modal className="alert-modal" isOpen={this.state.alert_modal} toggle={this.toggle_alert} >
         <ModalHeader toggle={this.toggle_alert}>Get Email Alerts When Prices Pass a Set Threshold</ModalHeader>
@@ -71,7 +75,7 @@ export default class Bitcoin extends React.Component {
       alert_me = (
         <div className="set-alert">
           <Button className="btn-secondary btn" onClick={this.toggle_alerts}>Set Alert</Button>
-          {this.alert_modal("btc")}
+          {this.alert_modal()}
         </div>
       );
     }
