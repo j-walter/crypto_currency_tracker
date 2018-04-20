@@ -48,12 +48,8 @@ defmodule CryptoCurrencyTrackerWeb.ApiChannel do
   end
 
   defp refresh_user_details(socket, refreshed_user) when not is_nil(refreshed_user) do
-    case AuthAgent.put(socket.assigns[:user_token] || "", refreshed_user) do
-      {:ok, user} ->
-        user
-      _ ->
-        nil
-    end
+    AuthAgent.put(socket.assigns[:user_token] || "", refreshed_user)
+    refreshed_user
   end
 
   defp get_user_details(socket) do
