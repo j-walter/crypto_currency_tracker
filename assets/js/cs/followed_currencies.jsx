@@ -1,9 +1,7 @@
 // followed from Nat Tuck's lecture notes
 import React from 'react';
 import { Button, Modal, ModalBody, Form, FormGroup, Label, Input, ModalFooter, ModalHeader, ModalProps } from 'reactstrap';
-import Bitcoin from './bitcoin';
-import Ethereum from './ethereum';
-import Litecoin from './litecoin';
+import CryptoCard from './crypto_card';
 // import Line from './line';
 
 export default class FollowedCurrencies extends React.Component {
@@ -165,9 +163,9 @@ export default class FollowedCurrencies extends React.Component {
     // TODO: only display followed currencies for a signed in user
     let coins = (
       <div className="row cryto-container">
-        <CryptoCard price={bitcoin_price} curr_id={"btc"} channel={this.props.channel} ifUser={user_exist} onClick={() => display_modal(this.props.prices.btc, "btc")} />
-        <Litecoin price={litecoin_price} curr_id={"ltc"} channel={this.props.channel} ifUser={user_exist} onClick={() => display_modal(this.props.prices.ltc, "ltc")} />
-        <Ethereum price={ethereum_price} curr_id={"eth"} channel={this.props.channel} ifUser={user_exist} onClick={() => display_modal(this.props.prices.eth, "eth")} />
+        <CryptoCard price={bitcoin_price} curr_id="btc" cryptoName="Bitcoin" channel={this.props.channel} ifUser={user_exist} onClick={() => display_modal(this.props.prices.btc, "btc")} />
+        <CryptoCard price={litecoin_price} curr_id="ltc" cryptoName="Litecoin" channel={this.props.channel} ifUser={user_exist} onClick={() => display_modal(this.props.prices.ltc, "ltc")} />
+        <CryptoCard price={ethereum_price} curr_id="eth" cryptoName="Ethereum" channel={this.props.channel} ifUser={user_exist} onClick={() => display_modal(this.props.prices.eth, "eth")} />
       </div>);
 
     let edit = (<div></div>);

@@ -1,8 +1,7 @@
-// followed Nat's lecture notes
 import React from 'react';
 import { Button, Modal, ModalBody, Form, FormGroup, Label, Input, ModalFooter, ModalHeader, ModalProps, Card, CardBody } from 'reactstrap';
 
-export default class Ethereum extends React.Component {
+export default class CryptoCard extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -18,7 +17,7 @@ export default class Ethereum extends React.Component {
   }
 
   getHistory(start, end, cb) {
-    var channel = this.props.channel.push("get_currency_pricing", { "currency_id": "btc", "start_date": start, "end_date": end });
+    var channel = this.props.channel.push("get_currency_pricing", { "currency_id": this.props.curr_id, "start_date": start, "end_date": end });
     channel.receive("ok", cb);
   }
 
@@ -35,7 +34,7 @@ export default class Ethereum extends React.Component {
   }
 
   handleSubmit(event) {
-    var channel = this.props.channel.push("enable_currency_alerts", { "currency_id": "eth", "thresholds": { "threshold1": this.state.high_val, "threshold2": this.state.low_val } });
+    var channel = this.props.channel.push("enable_currency_alerts", { "currency_id": this.props.curr_id, "thresholds": { "threshold1": this.state.high_val, "threshold2": this.state.low_val } });
     channel.receive("ok", resp => {
       console.log(resp);
     });
@@ -62,7 +61,6 @@ export default class Ethereum extends React.Component {
           </div>
         </ModalBody>
         <ModalFooter>
-          {/* <Button color="primary" onClick={() => }>Submit</Button> */}
           <Button color="secondary" onClick={this.toggle_alerts}>Cancel</Button>
         </ModalFooter>
       </Modal>);
@@ -70,7 +68,6 @@ export default class Ethereum extends React.Component {
 
   render() {
     let price = this.props.price;
-
     let alert_me = (<div></div>);
     if (this.props.ifUser) {
       alert_me = (
@@ -84,8 +81,8 @@ export default class Ethereum extends React.Component {
     return (
       <Card className="price_card col-sm">
         <CardBody>
-          <div className="text-center ethereum">
-            <h2>Ethereum</h2>
+          <div className="text-center litecoin">
+            <h2>{this.props.cryptoName}</h2>
             <a href="/#">{price}</a>
           </div>
           {alert_me}
