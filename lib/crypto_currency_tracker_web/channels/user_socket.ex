@@ -3,6 +3,7 @@ defmodule CryptoCurrencyTrackerWeb.UserSocket do
 
   channel "api:*", CryptoCurrencyTrackerWeb.ApiChannel
   transport :websocket, Phoenix.Transports.WebSocket
+  alias CryptoCurrencyTrackerWeb.InjectToken
 
   def connect(params, socket) do
     if !!params["token"] do

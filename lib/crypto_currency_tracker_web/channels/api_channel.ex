@@ -47,11 +47,12 @@ defmodule CryptoCurrencyTrackerWeb.ApiChannel do
     {:reply, {:ok, %{alert: Alert.client_view(Api.disable_currency_alerts(currency_id, get_user_details(socket)))}}, socket}
   end
 
-  defp refresh_user_details(socket, refreshed_user) do
-    if !!socket.assigns[:user_token] and !!refreshed_user do
-      AuthAgent.put(socket.assigns[:user_token], refreshed_user)
-    else
-      nil
+  defp refresh_user_details(socket, refreshed_user) when not is_nil(refreshed_user) do
+    case AuthAgent.put(socket.assigns[:user_token] || "", refreshed_user) do
+      {:ok, user} ->
+        user
+      _ ->
+        nil
     end
   end
 

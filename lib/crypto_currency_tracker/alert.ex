@@ -29,7 +29,7 @@ defmodule CryptoCurrencyTracker.Alert do
   end
 
   def get(currency_id, user_details) when not is_nil(user_details) do
-    user_id = user_details.id || ""
+    user_id = Map.get(user_details, :id, nil) || ""
     from(alert in Alert, where: alert.user_id == ^user_id and alert.digital_currency == ^currency_id) |> Repo.one()
   end
 
