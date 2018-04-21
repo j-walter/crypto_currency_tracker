@@ -8,6 +8,7 @@ config :crypto_currency_tracker, CryptoCurrencyTrackerWeb.Endpoint,
 server: true,
   load_from_system_env: true,
   http: [ip: {127, 0, 0, 1}, port: 5103],
+  check_origin: ["https://cointrack.loopback.onl", "http://cointrack.loopback.onl"],
   cache_static_manifest: "priv/static/cache_manifest.json",
   root: "."
 
