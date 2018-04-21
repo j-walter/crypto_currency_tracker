@@ -44,7 +44,8 @@ defmodule CryptoCurrencyTracker.Mixfile do
       {:ueberauth_google, "~> 0.7"},
       {:httpoison, "~> 1.0"},
       {:jason, "~> 1.0"},
-      {:bamboo, "~> 0.8"}
+      {:bamboo, "~> 0.8"},
+      {:distillery, "~> 1.0"}
     ]
   end
 

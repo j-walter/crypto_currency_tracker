@@ -7,7 +7,8 @@ use Mix.Config
 config :crypto_currency_tracker, CryptoCurrencyTrackerWeb.Endpoint,
 server: true,
   load_from_system_env: true,
-  http: [ip: {127, 0, 0, 1}, port: 4000],
+  http: [ip: {127, 0, 0, 1}, port: 5103],
+  check_origin: ["https://cointrack.loopback.onl", "http://cointrack.loopback.onl"],
   cache_static_manifest: "priv/static/cache_manifest.json",
   root: "."
 
@@ -18,8 +19,10 @@ config :crypto_currency_tracker, CryptoCurrencyTracker.Mailer,
   adapter: Bamboo.SMTPAdapter,
   server: "email-smtp.us-east-1.amazonaws.com",
   port: 587,
-  username: SYSTEM.get_env("SMTP_USERNAME"),
-  password: SYSTEM.get_env("SMTP_PASSWORD"),
+  username: System.get_env("SMTP_USERNAME"),
+  password: System.get_env("SMTP_PASSWORD"),
   tls: :always,
   ssl: true,
   retries: 1
+
+import_config "prod.secret.exs"

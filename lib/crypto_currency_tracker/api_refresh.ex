@@ -26,12 +26,12 @@ defmodule CryptoCurrencyTracker.ApiRefresh do
         case HTTPoison.get("https://api.coinbase.com/v2/prices/" <> currency_id <> "-USD/" <> Atom.to_string(method), @cb_headers, @cb_options) do
           {:ok, %{body: body, status_code: 200}} ->
             tracker_state = ApiAgent.get(currency_id)
-            new_price = Jason.decode!(body)["data"]["amount"]
+            new_price = String.to_float(Jason.decode!(body)["data"]["amount"])
             old_price = tracker_state[method][:current]
-            merged_state = Map.put(tracker_state, method, Map.merge(tracker_state[method], %{current: String.to_float(new_price)}))
+            merged_state = Map.put(tracker_state, method, Map.merge(tracker_state[method], %{current: new_price}))
             ApiAgent.put(currency_id, Map.merge(tracker_state, merged_state))
             Enum.each(AlertAgent.get_thresholds(currency_id), fn threshold ->
-              if (threshold < new_price and old_price <= threshold) or (threshold >= new_price and old_price > threshold) do
+              if (threshold < new_price and old_price < threshold) or (threshold > new_price and old_price > threshold) do
                 to_notify = AlertAgent.get_subscribers(currency_id, threshold)
                 Email.passed_digital_currency_threshold(currency_id, to_notify, threshold, old_price, new_price)
                 |> Mailer.deliver_later()

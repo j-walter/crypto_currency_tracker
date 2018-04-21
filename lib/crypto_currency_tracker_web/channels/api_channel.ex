@@ -29,8 +29,8 @@ defmodule CryptoCurrencyTrackerWeb.ApiChannel do
     {:reply, {:ok, %{user: User.client_view(refresh_user_details(socket, user))}}, socket}
   end
 
-  def handle_in("enable_currency_alerts", %{"currency_id" => currency_id, "thresholds" => thresholds}, socket) do
-    thresholds = [get_float(thresholds["threshold1"]), get_float(thresholds["threshold2"])]
+  def handle_in("enable_currency_alerts", %{"currency_id" => currency_id, "threshold1" => threshold1, "threshold2" => threshold2}, socket) do
+    thresholds = [get_float(threshold1), get_float(threshold2)]
     {:reply, {:ok, %{alert: Alert.client_view(Api.enable_currency_alerts(currency_id, get_user_details(socket), thresholds))}}, socket}
   end
 

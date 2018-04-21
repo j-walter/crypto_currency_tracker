@@ -41,7 +41,7 @@ defmodule CryptoCurrencyTracker.Alert do
       on_conflict: [set: [threshold1: Enum.at(thresholds, 0), threshold2: Enum.at(thresholds, 1)]],
       conflict_target: [:digital_currency, :user_id]) do
       {:ok, new_alert} ->
-        Enum.each(Enum.reject([old_alert.threshold1, old_alert.threshold2], fn x -> is_nil(x) or x === new_alert.threshold1 or x === new_alert.threshold2 end), fn threshold ->
+        Enum.each(Enum.reject([Map.get(old_alert || %{}, :threshold1, nil), Map.get(old_alert || %{}, :threshold2, nil)], fn x -> is_nil(x) or x === new_alert.threshold1 or x === new_alert.threshold2 end), fn threshold ->
           AlertAgent.del_subscriber(currency_id, threshold, user_details.email)
         end)
         Enum.each(Enum.reject([new_alert.threshold1, new_alert.threshold2], &is_nil/1), fn threshold ->
