@@ -109,8 +109,16 @@ export default class FollowedCurrencies extends React.Component {
   render() {
     let user_exist = false;
     let edit = (<div></div>);
+    
     if (this.props.prices.user) {
       user_exist = true;
+    }
+    
+    let btc = (<CryptoCard currency={this.props.prices.btc} curr_id="btc" cryptoName="Bitcoin" channel={this.props.channel} ifUser={user_exist} />);
+    let ltc = (<CryptoCard currency={this.props.prices.ltc} curr_id="ltc" cryptoName="Litecoin" channel={this.props.channel} ifUser={user_exist} />);
+    let eth = (<CryptoCard currency={this.props.prices.eth} curr_id="eth" cryptoName="Ethereum" channel={this.props.channel} ifUser={user_exist} />);
+    
+    if (this.props.prices.user) {
       if (!this.props.prices.user.follow_btc) {
         btc = (<div></div>);
       }
@@ -120,13 +128,8 @@ export default class FollowedCurrencies extends React.Component {
       if (!this.props.prices.user.follow_eth) {
         eth = (<div></div>);
       }
-    } else {
-      user_exist = false;
     }
 
-    let btc = (<CryptoCard currency={this.props.prices.btc} curr_id="btc" cryptoName="Bitcoin" channel={this.props.channel} ifUser={user_exist} />);
-    let ltc = (<CryptoCard currency={this.props.prices.ltc} curr_id="ltc" cryptoName="Litecoin" channel={this.props.channel} ifUser={user_exist} />);
-    let eth = (<CryptoCard currency={this.props.prices.eth} curr_id="eth" cryptoName="Ethereum" channel={this.props.channel} ifUser={user_exist} />);
 
     let coins = (
       <div className="row cryto-container">
