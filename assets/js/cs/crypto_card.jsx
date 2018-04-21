@@ -43,7 +43,7 @@ export default class CryptoCard extends React.Component {
   }
 
   handleSubmit(event) {
-    var channel = this.props.channel.push("enable_currency_alerts", { "currency_id": this.props.curr_id, "thresholds": { "threshold1": this.state.high_val, "threshold2": this.state.low_val } });
+    var channel = this.props.channel.push("enable_currency_alerts", { "currency_id": this.props.curr_id, "threshold1": this.state.high_val, "threshold2": this.state.low_val } );
     channel.receive("ok", resp => {
       console.log(resp);
     });
