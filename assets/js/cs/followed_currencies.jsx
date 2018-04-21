@@ -23,14 +23,6 @@ export default class FollowedCurrencies extends React.Component {
     this.setState({ display_modal: !this.state.display_modal });
   }
 
-  getPrice(currency) {
-    if (currency && currency.sell && currency.sell.current) {
-      return currency.sell.current;
-    } else {
-      return 0;
-    }
-  }
-
   followCurrency(curr_id) {
     var channel = this.props.channel.push("follow_currency", { "currency_id": curr_id });
     channel.receive("ok", resp => {
@@ -48,7 +40,6 @@ export default class FollowedCurrencies extends React.Component {
   }
 
   getFollow(curr_id) {
-    console.log("In getFollow: ", this.props.prices);
     if (this.props.prices.user != null) {
       if (curr_id == "btc") {
         if (this.props.prices.user.follow_btc) {
@@ -89,36 +80,6 @@ export default class FollowedCurrencies extends React.Component {
     }
   }
 
-  display_crypto_modal(currency, curr_id) {
-    let d = new Date();
-    let curr_date = d.getDate();
-    let curr_month = d.getMonth() + 1;
-    let curr_year = d.getFullYear();
-    let end_date = new Date(curr_month + "-" + curr_date + "-" + curr_year);
-    let start_date = new Date(curr_year + "-" + curr_month + "-" + curr_date);
-    start_date.setDate(curr_date - 7);
-    let end_month = curr_month;
-    let start_month = start_date.getMonth() + 1;
-    if (end_month < 10) {
-      end_month = "0" + curr_month;
-    }
-    if (start_month < 10) {
-      start_month = "0" + start_month;
-    }
-    let start_date_str = start_date.getFullYear() + "-" + start_month + "-" + (start_date.getDate());
-    let end_date_str = curr_year + "-" + end_month + "-" + curr_date;
-
-    let properHistory = {}
-    this.getHistory(curr_id, String(start_date_str), String(end_date_str), (history) => {
-      properHistory = Object.keys(history).map((key) => ({ date: key, price: history[key] }));
-    });
-    
-    console.log(properHistory);
-
-    // let chart = (<Line history={history} />);
-    // return (<div>{chart}</div>);
-  }
-
   edit_modal() {
     let bitcoin_state = this.getFollowBtn(this.props.prices.btc, "btc");
     let litecoin_state = this.getFollowBtn(this.props.prices.ltc, "ltc");
@@ -146,35 +107,38 @@ export default class FollowedCurrencies extends React.Component {
   }
 
   render() {
-    // here we need to get the list from params and find out what cryptos the
-    // user is tracking, then make a call through the api
-    let bitcoin_price = this.getPrice(this.props.prices.btc);
-    let ethereum_price = this.getPrice(this.props.prices.eth);
-    let litecoin_price = this.getPrice(this.props.prices.ltc);
-
     let user_exist = false;
-
+    let edit = (<div></div>);
     if (this.props.prices.user) {
       user_exist = true;
+      if (!this.props.prices.user.follow_btc) {
+        btc = (<div></div>);
+      }
+      if (!this.props.prices.user.follow_ltc) {
+        ltc = (<div></div>);
+      }
+      if (!this.props.prices.user.follow_eth) {
+        eth = (<div></div>);
+      }
     } else {
       user_exist = false;
     }
 
-    // TODO: only display followed currencies for a signed in user
+    let btc = (<CryptoCard currency={this.props.prices.btc} curr_id="btc" cryptoName="Bitcoin" channel={this.props.channel} ifUser={user_exist} />);
+    let ltc = (<CryptoCard currency={this.props.prices.ltc} curr_id="ltc" cryptoName="Litecoin" channel={this.props.channel} ifUser={user_exist} />);
+    let eth = (<CryptoCard currency={this.props.prices.eth} curr_id="eth" cryptoName="Ethereum" channel={this.props.channel} ifUser={user_exist} />);
+
     let coins = (
       <div className="row cryto-container">
-        <CryptoCard price={bitcoin_price} curr_id="btc" cryptoName="Bitcoin" channel={this.props.channel} ifUser={user_exist} onClick={() => display_modal(this.props.prices.btc, "btc")} />
-        <CryptoCard price={litecoin_price} curr_id="ltc" cryptoName="Litecoin" channel={this.props.channel} ifUser={user_exist} onClick={() => display_modal(this.props.prices.ltc, "ltc")} />
-        <CryptoCard price={ethereum_price} curr_id="eth" cryptoName="Ethereum" channel={this.props.channel} ifUser={user_exist} onClick={() => display_modal(this.props.prices.eth, "eth")} />
+        {btc}
+        {ltc}
+        {eth}
       </div>);
-
-    let edit = (<div></div>);
 
     if (this.props.prices.user != null) {
       edit = (
         <div>
           <Button className="btn btn-primary" onClick={this.toggle_edit}>Edit Cryptos</Button>
-          <Button onClick={() => this.display_crypto_modal(this.props.prices.btc, "btc")} > History </Button>
           {this.edit_modal()}
         </div>
       );
