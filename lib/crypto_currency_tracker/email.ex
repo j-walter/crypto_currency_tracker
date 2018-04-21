@@ -10,7 +10,7 @@ defmodule CryptoCurrencyTracker.Email do
             "Threshold: " <> Float.to_string(threshold)
     new_email(
       from: "cointrack@loopback.onl",
-      bcc: recipient_emails,
+      bcc: MapSet.to_list(recipient_emails),
       subject: "Your " <> currency_id <> " threshold limit was triggered",
       text_body: body,
       html_body: Format.text_to_html(body) |> HTML.safe_to_string
