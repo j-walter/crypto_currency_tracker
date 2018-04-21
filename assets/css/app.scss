@@ -3,8 +3,8 @@
 @import "custom";
 
 .price_card {
-  height: 200px;
-  width: 200px;
+  // height: 200px;
+  // width: 200px;
   margin: 5px;
 }
 
@@ -27,4 +27,8 @@
 
 .crypto-price {
   color: blue;
+}
+
+.modal-dialog {
+  max-width: 650px;
 }

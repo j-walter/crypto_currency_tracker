@@ -16,7 +16,6 @@ class CryptoTracker extends React.Component {
   }
 
   updateUser(user) {
-    console.log(user.user);
     this.setState({user: user.user});
   }
 
@@ -28,7 +27,6 @@ class CryptoTracker extends React.Component {
   }
 
   render() {
-    console.log("STATE", this.state);
     return (
       <div>
         <Nav user={this.state.user}/>
