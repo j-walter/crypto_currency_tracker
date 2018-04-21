@@ -31,7 +31,7 @@ export default class Bitcoin extends React.Component {
 
     handleSubmit(event) {
       let curr_id = "btc";
-      var channel = this.props.channel.push("enable_currency_alerts", { "currency_id": curr_id, "thresholds": { "threshold1": this.state.high_val, "threshold2": this.state.low_val } });
+      var channel = this.props.channel.push("enable_currency_alerts", { "currency_id": curr_id, "threshold1": this.state.high_val, "threshold2": this.state.low_val });
       channel.receive("ok", resp => {
         console.log(resp);
       });
