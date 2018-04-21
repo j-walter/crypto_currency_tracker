@@ -23,3 +23,5 @@ config :crypto_currency_tracker, CryptoCurrencyTracker.Mailer,
   tls: :always,
   ssl: true,
   retries: 1
+
+import_config "prod.secret.exs"
