@@ -2,10 +2,9 @@
 @import "bootstrap";
 @import "custom";
 
-.price_card {
-  // height: 200px;
-  // width: 200px;
-  margin: 5px;
+.container-fluid {
+  margin: 0px;
+  padding: 0px;
 }
 
 .crypto-btn {
@@ -25,10 +24,77 @@
   margin-top: 5vh;
 }
 
+.set-history {
+  margin-top: 5vh;
+}
+
 .crypto-price {
   color: blue;
 }
 
 .modal-dialog {
   max-width: 650px;
+}
+
+.row {
+  margin:0px;
+  padding: 0px;
+}
+
+
+// Example usage:
+@include media-breakpoint-up(sm) {
+  .tiny-graph {
+    display: block;
+  }
+  .price-card {
+    width: 91vw;
+  }
+  .medium-graph {
+    display: none;
+  }
+}
+@include media-breakpoint-up(xs) {
+  .tiny-graph {
+    display: block;
+  }
+  .price-card {
+    width: 91vw;
+  }
+  .medium-graph {
+    display: none;
+  }
+}
+@include media-breakpoint-up(md) {
+  .tiny-graph {
+    display: none;
+  }
+  .price-card {
+    width: 31.5vw;
+  }
+  .medium-graph {
+    display: block;
+  }
+}
+@include media-breakpoint-up(lg) {
+  .tiny-graph {
+    display: none;
+  }
+  .price-card {
+    width: 32vw;
+  }
+  .medium-graph {
+    display: block;
+  }
+}
+@include media-breakpoint-up(xl) {
+  .tiny-graph {
+    display: none;
+  }
+  .price-card {
+    width: 32vw;
+  }
+  .medium-graph {
+    display: block;
+  }
 }

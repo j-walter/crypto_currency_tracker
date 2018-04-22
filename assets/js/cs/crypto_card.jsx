@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Modal, ModalBody, Form, FormGroup, Label, Input, ModalFooter, ModalHeader, ModalProps, Card, CardBody } from 'reactstrap';
+import { Button, Modal, ModalBody, Form, FormGroup, Label, Input, ModalFooter, ModalHeader, ModalProps, Card, CardBody, Col } from 'reactstrap';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ReferenceLine } from 'recharts';
 
 export default class CryptoCard extends React.Component {
@@ -11,7 +11,8 @@ export default class CryptoCard extends React.Component {
       high_val: 0,
       low_val: 0,
       week_history: [],
-
+      th1: this.props.thresholds.threshold1,
+      th2: this.props.thresholds.threshold2
     }
 
     this.toggle_history = this.toggle_history.bind(this);
@@ -38,17 +39,31 @@ export default class CryptoCard extends React.Component {
     let newData = this.state.week_history;
 
     return (
-      <div className="text-center">
-        <LineChart width={600} height={300} data={newData}
-          margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
-          <XAxis dataKey="date" />
-          <YAxis domain={[this.props.thresholds.threshold2, this.props.thresholds.threshold1]} />
-          <CartesianGrid strokeDasharray="3 3" />
-          <Tooltip />
-          <Line type="monotone" dataKey="price" stroke="#8884d8" activeDot={{ r: 8 }} />
-          <ReferenceLine y={this.props.thresholds.threshold1} label="High" stroke="black" />
-          <ReferenceLine y={this.props.thresholds.threshold2} label="Low" stroke="red" />
-        </LineChart>
+      <div>
+        <div className="text-center medium-graph">
+          <LineChart width={600} height={300} data={newData}
+            margin={{ top: 5, right: 30, left: 20, bottom: 20 }}>
+            <XAxis dataKey="date" />
+            <YAxis domain={[this.state.th2, this.state.th1]} type="number" />
+            <CartesianGrid strokeDasharray="3 3" />
+            <Tooltip />
+            <Line type="monotone" dataKey="price" stroke="#8884d8" activeDot={{ r: 8 }} />
+            <ReferenceLine y={this.state.th1} label="High" stroke="black" />
+            <ReferenceLine y={this.state.th2} label="Low" stroke="red" />
+          </LineChart>
+        </div>
+        <div className="text-center tiny-graph">
+          <LineChart width={300} height={300} data={newData}
+            margin={{ top: 5, right: 0, left: 0, bottom: 0 }}>
+            <XAxis dataKey="date" />
+            <YAxis domain={[this.state.th2, this.state.th1]} type="number" />
+            <CartesianGrid strokeDasharray="3 3" />
+            <Tooltip />
+            <Line type="monotone" dataKey="price" stroke="#8884d8" activeDot={{ r: 8 }} />
+            <ReferenceLine y={this.state.th1} label="High" stroke="black" />
+            <ReferenceLine y={this.state.th2} label="Low" stroke="red" />
+          </LineChart>
+        </div>
       </div>
     );
   }
@@ -74,6 +89,7 @@ export default class CryptoCard extends React.Component {
     var channel = this.props.channel.push("enable_currency_alerts", { "currency_id": this.props.curr_id, "threshold1": this.state.high_val, "threshold2": this.state.low_val });
     channel.receive("ok", resp => {
       console.log(resp);
+      this.setState({ th1: resp.threshold1, th2: resp.threshold2 });
     });
     event.preventDefault();
   }
@@ -167,7 +183,7 @@ export default class CryptoCard extends React.Component {
       );
 
       history = (
-        <div>
+        <div className="set-history">
           <Button className="btn-secondary btn" onClick={() => {
             this.setupHistory();
           }} > History </Button>
@@ -177,16 +193,18 @@ export default class CryptoCard extends React.Component {
     }
 
     return (
-      <Card className="price_card col-3">
-        <CardBody>
-          <div className="text-center litecoin">
-            <h2>{this.props.cryptoName}</h2>
-            <h5 className="crypto-price">{price}</h5>
-          </div>
-          {alert_me}
-          {history}
-        </CardBody>
-      </Card>
+        <Card className="price-card">
+          <CardBody>
+            <div className="text-center">
+              <h2>{this.props.cryptoName}</h2>
+              <h5 className="crypto-price">{price}</h5>
+            </div>
+            <div className="row">
+            {alert_me}
+            {history}
+            </div>
+          </CardBody>
+        </Card>
     );
   }
 }
