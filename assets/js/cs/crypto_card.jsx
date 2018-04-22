@@ -1,20 +1,30 @@
 import React from 'react';
-import { Button, Modal, ModalBody, Form, FormGroup, Label, Input, ModalFooter, ModalHeader, ModalProps, Card, CardBody } from 'reactstrap';
+import { Button, Modal, ModalBody, Form, FormGroup, Label, Input, ModalFooter, ModalHeader, ModalProps, Card, CardBody, Col } from 'reactstrap';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ReferenceLine } from 'recharts';
 
 export default class CryptoCard extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      display_modal: false,
+      alert_modal: false,
+      history_modal: false,
       high_val: 0,
       low_val: 0,
-      week_history: {}
+      week_history: [],
+      th1: this.props.thresholds.threshold1,
+      th2: this.props.thresholds.threshold2
     }
 
+    this.toggle_history = this.toggle_history.bind(this);
     this.toggle_alerts = this.toggle_alerts.bind(this);
     this.handleHighChange = this.handleHighChange.bind(this);
     this.handleLowChange = this.handleLowChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.getHistory = this.getHistory.bind(this);
+  }
+
+  toggle_history() {
+    this.setState({ history_modal: !this.state.history_modal });
   }
 
   getPrice() {
@@ -23,6 +33,39 @@ export default class CryptoCard extends React.Component {
     } else {
       return 0;
     }
+  }
+
+  graph() {
+    let newData = this.state.week_history;
+
+    return (
+      <div>
+        <div className="text-center medium-graph">
+          <LineChart width={600} height={300} data={newData}
+            margin={{ top: 5, right: 30, left: 20, bottom: 20 }}>
+            <XAxis dataKey="date" />
+            <YAxis domain={[this.state.th2, this.state.th1]} type="number" />
+            <CartesianGrid strokeDasharray="3 3" />
+            <Tooltip />
+            <Line type="monotone" dataKey="price" stroke="#8884d8" activeDot={{ r: 8 }} />
+            <ReferenceLine y={this.state.th1} label="High" stroke="black" />
+            <ReferenceLine y={this.state.th2} label="Low" stroke="red" />
+          </LineChart>
+        </div>
+        <div className="text-center tiny-graph">
+          <LineChart width={300} height={300} data={newData}
+            margin={{ top: 5, right: 0, left: 0, bottom: 0 }}>
+            <XAxis dataKey="date" />
+            <YAxis domain={[this.state.th2, this.state.th1]} type="number" />
+            <CartesianGrid strokeDasharray="3 3" />
+            <Tooltip />
+            <Line type="monotone" dataKey="price" stroke="#8884d8" activeDot={{ r: 8 }} />
+            <ReferenceLine y={this.state.th1} label="High" stroke="black" />
+            <ReferenceLine y={this.state.th2} label="Low" stroke="red" />
+          </LineChart>
+        </div>
+      </div>
+    );
   }
 
   getHistory(start, end, cb) {
@@ -43,17 +86,18 @@ export default class CryptoCard extends React.Component {
   }
 
   handleSubmit(event) {
-    var channel = this.props.channel.push("enable_currency_alerts", { "currency_id": this.props.curr_id, "threshold1": this.state.high_val, "threshold2": this.state.low_val } );
+    var channel = this.props.channel.push("enable_currency_alerts", { "currency_id": this.props.curr_id, "threshold1": this.state.high_val, "threshold2": this.state.low_val });
     channel.receive("ok", resp => {
       console.log(resp);
+      this.setState({ th1: resp.threshold1, th2: resp.threshold2 });
     });
     event.preventDefault();
   }
 
-  alert_modal() {
+  alertModal() {
     return (
-      <Modal className="alert-modal" isOpen={this.state.alert_modal} toggle={this.toggle_alert} >
-        <ModalHeader toggle={this.toggle_alert}>Get Email Alerts When Prices Pass a Set Threshold</ModalHeader>
+      <Modal className="alert-modal" isOpen={this.state.alert_modal} toggle={this.toggle_alerts} >
+        <ModalHeader toggle={this.toggle_alerts}>Get Email Alerts When Prices Pass a Set Threshold</ModalHeader>
         <ModalBody>
           <div className="alert-cryptos text-center">
             <Form onSubmit={this.handleSubmit}>
@@ -75,14 +119,14 @@ export default class CryptoCard extends React.Component {
       </Modal>);
   }
 
-  display_crypto_modal() {
+  setupHistory() {
     let d = new Date();
     let curr_date = d.getDate();
     let curr_month = d.getMonth() + 1;
     let curr_year = d.getFullYear();
     let end_date = new Date(curr_month + "-" + curr_date + "-" + curr_year);
     let start_date = new Date(curr_year + "-" + curr_month + "-" + curr_date);
-    start_date.setDate(curr_date - 7);
+    start_date.setDate(curr_date - 6);
     let end_month = curr_month;
     let start_month = start_date.getMonth() + 1;
 
@@ -95,16 +139,34 @@ export default class CryptoCard extends React.Component {
 
     let start_date_str = start_date.getFullYear() + "-" + start_month + "-" + (start_date.getDate());
     let end_date_str = curr_year + "-" + end_month + "-" + curr_date;
-
-    let properHistory = {}
-    this.getHistory(this.props.curr_id, String(start_date_str), String(end_date_str), (history) => {
-      this.setState(week_history, Object.keys(history).map((key) => ({ date: key, price: history[key] })));
+    let months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    let properHistory = {};
+    this.getHistory(String(start_date_str), String(end_date_str), (history) => {
+      properHistory = Object.keys(history).map((key) => {
+        let newDate = new Date(String(key));
+        let disp = months[newDate.getMonth()] + " " + newDate.getDate();
+        return { date: disp, price: history[key] };
+      });
+      this.setState({ week_history: properHistory.reverse() }, this.toggle_history.bind(this));
     });
+  }
 
-    console.log(this.state.week_history);
+  historyModal() {
 
-    // let chart = (<Line history={history} />);
-    // return (<div>{chart}</div>);
+    return (
+      <Modal className="history-modal modal-lg" isOpen={this.state.history_modal} toggle={this.toggle_history} >
+        <ModalHeader toggle={this.toggle_history}>
+          <span className="text-center">Week at a Glance for {this.props.cryptoName}</span>
+        </ModalHeader>
+        <ModalBody>
+          <div>
+            {this.graph()}
+          </div>
+        </ModalBody>
+        <ModalFooter>
+          <Button color="secondary" onClick={this.toggle_history}>Cancel</Button>
+        </ModalFooter>
+      </Modal>);
   }
 
   render() {
@@ -116,27 +178,33 @@ export default class CryptoCard extends React.Component {
       alert_me = (
         <div className="set-alert">
           <Button className="btn-secondary btn" onClick={this.toggle_alerts}>Set Alert</Button>
-          {this.alert_modal()}
+          {this.alertModal()}
         </div>
       );
 
-      // history = (
-      //   <div>
-      //     <Button onClick={() => this.display_crypto_modal(this.props.currency, this.props.curr_id)} > History </Button>
-      //   </div>
-      // );
+      history = (
+        <div className="set-history">
+          <Button className="btn-secondary btn" onClick={() => {
+            this.setupHistory();
+          }} > History </Button>
+          {this.historyModal()}
+        </div>
+      );
     }
 
     return (
-      <Card className="price_card col-sm">
-        <CardBody>
-          <div className="text-center litecoin">
-            <h2>{this.props.cryptoName}</h2>
-            <h5 className="crypto-price">{price}</h5>
-          </div>
-          {alert_me}
-        </CardBody>
-      </Card>
+        <Card className="price-card">
+          <CardBody>
+            <div className="text-center">
+              <h2>{this.props.cryptoName}</h2>
+              <h5 className="crypto-price">{price}</h5>
+            </div>
+            <div className="row">
+            {alert_me}
+            {history}
+            </div>
+          </CardBody>
+        </Card>
     );
   }
 }

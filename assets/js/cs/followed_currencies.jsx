@@ -1,8 +1,7 @@
-// followed from Nat Tuck's lecture notes
+// looked at reactstrap's Modal and Form documentation
 import React from 'react';
 import { Button, Modal, ModalBody, Form, FormGroup, Label, Input, ModalFooter, ModalHeader, ModalProps } from 'reactstrap';
 import CryptoCard from './crypto_card';
-// import Line from './line';
 
 export default class FollowedCurrencies extends React.Component {
   constructor(props) {
@@ -26,7 +25,6 @@ export default class FollowedCurrencies extends React.Component {
   followCurrency(curr_id) {
     var channel = this.props.channel.push("follow_currency", { "currency_id": curr_id });
     channel.receive("ok", resp => {
-      console.log(resp);
       this.props.updateUser(resp);
     });
   }
@@ -34,7 +32,6 @@ export default class FollowedCurrencies extends React.Component {
   unfollowCurrency(curr_id) {
     var channel = this.props.channel.push("unfollow_currency", { "currency_id": curr_id });
     channel.receive("ok", resp => {
-      console.log(resp);
       this.props.updateUser(resp);
     });
   }
@@ -65,15 +62,19 @@ export default class FollowedCurrencies extends React.Component {
 
   getFollowBtn(currency, curr_id) {
     let curr = "";
+    let followBool = false;
     if (curr_id == "btc") {
+      followBool = this.props.prices.user.follow_btc;
       curr = "Bitcoin";
     } else if (curr_id == "ltc") {
+      followBool = this.props.prices.user.follow_ltc;
       curr = "Litecoin";
     } else {
+      followBool = this.props.prices.user.follow_eth;
       curr = "Ethereum";
     }
 
-    if (this.getFollow(curr_id)) {
+    if (followBool) {
       return (<Button className="unfollow" onClick={() => this.unfollowCurrency(curr_id)}>Unfollow {curr}</Button>);
     } else {
       return (<Button className="follow" onClick={() => this.followCurrency(curr_id)}>Follow {curr}</Button>);
@@ -109,15 +110,17 @@ export default class FollowedCurrencies extends React.Component {
   render() {
     let user_exist = false;
     let edit = (<div></div>);
-    
+
     if (this.props.prices.user) {
       user_exist = true;
     }
-    
-    let btc = (<CryptoCard currency={this.props.prices.btc} curr_id="btc" cryptoName="Bitcoin" channel={this.props.channel} ifUser={user_exist} />);
-    let ltc = (<CryptoCard currency={this.props.prices.ltc} curr_id="ltc" cryptoName="Litecoin" channel={this.props.channel} ifUser={user_exist} />);
-    let eth = (<CryptoCard currency={this.props.prices.eth} curr_id="eth" cryptoName="Ethereum" channel={this.props.channel} ifUser={user_exist} />);
-    
+
+    console.log("state", this.props.prices);
+
+    let btc = (<CryptoCard currency={this.props.prices.btc} thresholds={this.props.prices.alerts.btc} curr_id="btc" cryptoName="Bitcoin" channel={this.props.channel} ifUser={user_exist} />);
+    let ltc = (<CryptoCard currency={this.props.prices.ltc} thresholds={this.props.prices.alerts.ltc} curr_id="ltc" cryptoName="Litecoin" channel={this.props.channel} ifUser={user_exist} />);
+    let eth = (<CryptoCard currency={this.props.prices.eth} thresholds={this.props.prices.alerts.eth} curr_id="eth" cryptoName="Ethereum" channel={this.props.channel} ifUser={user_exist} />);
+
     if (this.props.prices.user) {
       if (!this.props.prices.user.follow_btc) {
         btc = (<div></div>);
@@ -132,7 +135,7 @@ export default class FollowedCurrencies extends React.Component {
 
 
     let coins = (
-      <div className="row cryto-container">
+      <div className="row">
         {btc}
         {ltc}
         {eth}
