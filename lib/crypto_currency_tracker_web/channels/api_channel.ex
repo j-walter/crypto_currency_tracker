@@ -61,7 +61,7 @@ defmodule CryptoCurrencyTrackerWeb.ApiChannel do
   end
 
   def update_prices() do
-    CryptoCurrencyTrackerWeb.Endpoint.broadcast "api", "update", Api.get_currency(nil, nil)
+    CryptoCurrencyTrackerWeb.Endpoint.broadcast "api:", "update", Api.get_currency(nil, nil)
   end
 
 end

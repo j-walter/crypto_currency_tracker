@@ -170,7 +170,7 @@ export default class CryptoCard extends React.Component {
   }
 
   render() {
-    let price = "$" + this.getPrice();
+    let price = this.getPrice().toLocaleString("en-US", {style: "currency", currency: "USD"});
     let alert_me = (<div></div>);
     let history = (<div></div>);
 

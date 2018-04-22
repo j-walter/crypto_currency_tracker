@@ -13,6 +13,13 @@ class CryptoTracker extends React.Component {
     super(props);
     this.channel = this.props.channel;
     this.state = this.props.state;
+    this.props.channel.on("update", state => {
+      var newState = this.state;
+      newState.btc = state.btc;
+      newState.eth = state.eth;
+      newState.ltc = state.ltc;
+      this.setState(newState);
+    });
   }
 
   updateUser(user) {
