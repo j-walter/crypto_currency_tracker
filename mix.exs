@@ -20,7 +20,7 @@ defmodule CryptoCurrencyTracker.Mixfile do
   def application do
     [
       mod: {CryptoCurrencyTracker.Application, []},
-      other_applications: [:logger, :ueberauth_google, :runtime_tools, :httpoison, :bamboo]
+      other_applications: [:logger, :ueberauth_google, :runtime_tools, :httpoison, :bamboo, :bamboo_smtp]
     ]
   end
 
@@ -45,6 +45,7 @@ defmodule CryptoCurrencyTracker.Mixfile do
       {:httpoison, "~> 1.0"},
       {:jason, "~> 1.0"},
       {:bamboo, "~> 0.8"},
+      {:bamboo_smtp, "~> 1.4.0"},
       {:distillery, "~> 1.0"}
     ]
   end

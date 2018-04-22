@@ -32,9 +32,11 @@ defmodule CryptoCurrencyTracker.ApiRefresh do
             ApiAgent.put(currency_id, Map.merge(tracker_state, merged_state))
             Enum.each(AlertAgent.get_thresholds(currency_id), fn threshold ->
               if (threshold < new_price and old_price < threshold) or (threshold > new_price and old_price > threshold) do
-                to_notify = AlertAgent.get_subscribers(currency_id, threshold)
-                Email.passed_digital_currency_threshold(currency_id, to_notify, threshold, old_price, new_price)
-                |> Mailer.deliver_later()
+                to_notify = MapSet.to_list(AlertAgent.get_subscribers(currency_id, threshold))
+                Enum.each(to_notify, fn email ->
+                  Email.passed_digital_currency_threshold(currency_id, email, threshold, old_price, new_price)
+                  |> Mailer.deliver_later()
+                end)
               end
             end)
           _ ->

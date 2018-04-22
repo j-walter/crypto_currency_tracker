@@ -43,6 +43,7 @@ mix deps.get
 mix phx.digest
 MIX_ENV=prod mix ecto.create
 MIX_ENV=prod mix ecto.migrate
+source ~/.profile
 ERLANG_COOKIE=\"$(openssl rand -base64 64)\" REPLACE_OS_VARS=true MIX_ENV=prod mix release
 mkdir -p ~/www
 mkdir -p ~/old

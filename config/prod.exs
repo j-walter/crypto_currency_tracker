@@ -18,10 +18,9 @@ config :logger, level: :info
 config :crypto_currency_tracker, CryptoCurrencyTracker.Mailer,
   adapter: Bamboo.SMTPAdapter,
   server: "email-smtp.us-east-1.amazonaws.com",
-  port: 587,
+  port: 465,
   username: System.get_env("SMTP_USERNAME"),
   password: System.get_env("SMTP_PASSWORD"),
-  tls: :always,
   ssl: true,
   retries: 1
 
