@@ -1,20 +1,3 @@
 # CryptoCurrencyTracker
 
-To start your Phoenix server:
-
-  * Install dependencies with `mix deps.get`
-  * Create and migrate your database with `mix ecto.create && mix ecto.migrate`
-  * Install Node.js dependencies with `cd assets && npm install`
-  * Start Phoenix endpoint with `mix phx.server`
-
-Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
-
-Ready to run in production? Please [check our deployment guides](http://www.phoenixframework.org/docs/deployment).
-
-## Learn more
-
-  * Official website: http://www.phoenixframework.org/
-  * Guides: http://phoenixframework.org/docs/overview
-  * Docs: https://hexdocs.pm/phoenix
-  * Mailing list: http://groups.google.com/group/phoenix-talk
-  * Source: https://github.com/phoenixframework/phoenix
+For our project, we have implemented a cryptocurrency tracker/alert web application using Phoenix on the backend and ReactJS on the frontend. Our app allows users to login with their Google Account and “follow” up to three digital currencies, including bitcoin, ethereum and litecoin. Following consists of providing the current price, historical price, and price change notifications via email. We decided to make a single page application, using websockets to push price changes as well as implement the previously mentioned features. Early on we accorded that it was important to design an efficient way to update cryptocurrency prices, as well as implement the email alert system. For the UI, we wanted to design an intuitive interface to display the coin’s price and the historical price data.
